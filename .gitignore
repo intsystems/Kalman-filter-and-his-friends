@@ -1,0 +1,50 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.mypy_cache
+*.pytest_cache
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE and editor settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Machine learning model files and checkpoints
+*.ckpt
+*.pth
+*.pt
+*.pickle
+models/
+saved_models/
+checkpoints/
+
+# Logs and outputs
+logs/
+*.log
+*.xml
+
+
+# Operating system files
+.DS_Store
