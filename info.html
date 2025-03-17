@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; Kalman filter and his friends  documentation</title>
+  <title>💡 Description &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -19,7 +19,9 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to Kalman filter and his friends!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,7 +43,17 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">💡 Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#algorithms-implemented">📌 Algorithms Implemented</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#related-work">🔗 Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#tech-stack">📚 Tech Stack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">👨‍💻 Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#links">📬 Links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 </ul>
@@ -64,7 +76,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="breadcrumb-item active">💡 Description</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/info.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -74,11 +86,107 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
+  <div class="docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span> <span class="n">Kalman</span> <span class="n">Filter</span> <span class="ow">and</span> <span class="n">Extensions</span> <span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;images/kalman.webp&quot;</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<p align="center"></p><table><tr><td align="left"><p>Title</p>
+</td><td><p>Kalman Filter and Extensions</p>
+</td></tr><tr><td align="left"><p>Authors</p>
+</td><td><p>Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk</p>
+</td></tr><tr><td align="left"><p>Consultant</p>
+</td><td><p>Oleg Bakhteev, PhD</p>
+</td></tr></table><section id="description">
+<h1>💡 Description<a class="headerlink" href="#description" title="Link to this heading"></a></h1>
+<p>This project focuses on implementing Kalman Filters and their extensions
+in a simple and clear manner. Despite their importance, these
+state-space models remain underrepresented in the deep learning
+community. Our goal is to create a well-documented and efficient
+implementation that aligns with existing structured state-space models.</p>
+</section>
+<section id="algorithms-implemented">
+<h1>📌 Algorithms Implemented<a class="headerlink" href="#algorithms-implemented" title="Link to this heading"></a></h1>
+<p>We plan to implement the following distributions in our library: - [ ]
+<strong>Kalman Filter</strong> - [ ] <strong>Extended Kalman Filter (EKF)</strong> - [ ]
+<strong>Unscented Kalman Filter (UKF)</strong> - [ ] <strong>Variational Kalman Filters</strong></p>
+</section>
+<section id="related-work">
+<h1>🔗 Related Work<a class="headerlink" href="#related-work" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/raphaelreme/torch-kf?tab=readme-ov-file">PyTorch implementation of Kalman
+Filters</a></p></li>
+<li><p><a class="reference external" href="https://pyro.ai/examples/ekf.html">Extended Kalman Filter implementation in
+Pyro</a></p></li>
+<li><p>Compatibility considerations with <a class="reference external" href="https://github.com/state-spaces/s4">S4 and other SSM state-of-the-art
+models</a></p></li>
+</ul>
+</section>
+<section id="tech-stack">
+<h1>📚 Tech Stack<a class="headerlink" href="#tech-stack" title="Link to this heading"></a></h1>
+<p>The project is implemented using:</p>
+<ul class="simple">
+<li><p><strong>Python</strong></p></li>
+<li><p><strong>PyTorch</strong> for tensor computation and differentiation</p></li>
+<li><p><strong>NumPy</strong> for numerical computations</p></li>
+<li><p><strong>SciPy</strong> for advanced mathematical functions</p></li>
+<li><p><strong>Jupyter Notebooks</strong> for experimentation and visualization</p></li>
+</ul>
+<p>You can install the required packages using pip:</p>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Clone the repository: <code class="docutils literal notranslate"><span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">git</span> <span class="pre">clone</span> <span class="pre">&lt;repository-url&gt;</span></code></p></li>
+<li><p>Navigate to the cloned directory:
+<code class="docutils literal notranslate"><span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">cd</span> <span class="pre">&lt;repository-directory&gt;</span></code></p></li>
+<li><p>Install the dependencies in editable mode:
+<code class="docutils literal notranslate"><span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">./</span></code></p></li>
+</ol>
+</section>
+<section id="usage">
+<h1>👨‍💻 Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
+<p>Basic usage examples for different filters will be provided. Below is an
+example of using a Kalman Filter in PyTorch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">KalmanFilter</span>
+
+<span class="n">kf</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">(</span><span class="n">dim_x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">dim_z</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">kf</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+<span class="n">kf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">kf</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Updated state estimate</span>
+</pre></div>
+</div>
+<p>More detailed examples and tutorials will be available in the
+documentation.</p>
+</section>
+<section id="links">
+<h1>📬 Links<a class="headerlink" href="#links" title="Link to this heading"></a></h1>
+<ul>
+<li><p><a class="reference external" href="./docs/plan.md">Project Documentation</a></p></li>
+<li><p><a class="reference external" href="...">Project Plan</a></p></li>
+<li><p class="rubric" id="matvei-kreinin-maria-nikitina-petr-babkin-anastasia-voznyuk"><a class="reference external" href="https://github.com/kreininmv">Matvei Kreinin</a>, <a class="reference external" href="https://github.com/NikitinaMaria">Maria
+Nikitina</a>, <a class="reference external" href="https://github.com/petr-parker">Petr
+Babkin</a>, <a class="reference external" href="https://github.com/natriistorm">Anastasia
+Voznyuk</a></p>
+</li>
+</ul>
+<p>Feel free to modify and expand this README as needed to fit your
+project’s specific goals and implementation details!</p>
+</section>
+
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Kalman filter and his friends!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
