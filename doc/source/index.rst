@@ -8,14 +8,12 @@ Welcome to Kalman filter and his friends!
 
 .. include:: ../../README.md
    :parser: myst_parser.sphinx_
-   :caption: Main Info:
 
 .. toctree::
    :maxdepth: 1
    :caption: Get Started:
    
    installation.rst
-
 
 .. toctree::
    :maxdepth: 1
