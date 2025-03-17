@@ -1,7 +1,7 @@
 from typing import Tuple
 
 import torch
-import torch import nn
+from torch import nn
 
 class BaseFilter(nn.Module):
     """
