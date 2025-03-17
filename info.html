@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💡 Description &mdash; Kalman filter and his friends  documentation</title>
+  <title>Kalman Filter and Extensions &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -45,11 +45,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">💡 Description</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Kalman Filter and Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#description">💡 Description</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#algorithms-implemented">📌 Algorithms Implemented</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#related-work">🔗 Related Work</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#tech-stack">📚 Tech Stack</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#usage">👨‍💻 Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#links">📬 Links</a></li>
 </ul>
@@ -76,7 +76,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">💡 Description</li>
+      <li class="breadcrumb-item active">Kalman Filter and Extensions</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/info.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -86,23 +86,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span> <span class="n">Kalman</span> <span class="n">Filter</span> <span class="ow">and</span> <span class="n">Extensions</span> <span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-</div>
-<div class="docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;images/kalman.webp&quot;</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span> <span class="o">/&gt;</span>
-</pre></div>
-</div>
-</div>
-<p align="center"></p><table><tr><td align="left"><p>Title</p>
-</td><td><p>Kalman Filter and Extensions</p>
-</td></tr><tr><td align="left"><p>Authors</p>
-</td><td><p>Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk</p>
-</td></tr><tr><td align="left"><p>Consultant</p>
-</td><td><p>Oleg Bakhteev, PhD</p>
-</td></tr></table><section id="description">
+  <section id="kalman-filter-and-extensions">
+<h1>Kalman Filter and Extensions<a class="headerlink" href="#kalman-filter-and-extensions" title="Link to this heading"></a></h1>
+<p><strong>Authors</strong>: Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk</p>
+<p><strong>Consultant</strong>: Oleg Bakhteev, PhD</p>
+</section>
+<section id="description">
 <h1>💡 Description<a class="headerlink" href="#description" title="Link to this heading"></a></h1>
 <p>This project focuses on implementing Kalman Filters and their extensions
 in a simple and clear manner. Despite their importance, these
@@ -112,9 +101,11 @@ implementation that aligns with existing structured state-space models.</p>
 </section>
 <section id="algorithms-implemented">
 <h1>📌 Algorithms Implemented<a class="headerlink" href="#algorithms-implemented" title="Link to this heading"></a></h1>
-<p>We plan to implement the following distributions in our library: - [ ]
-<strong>Kalman Filter</strong> - [ ] <strong>Extended Kalman Filter (EKF)</strong> - [ ]
-<strong>Unscented Kalman Filter (UKF)</strong> - [ ] <strong>Variational Kalman Filters</strong></p>
+<p>We plan to implement the following distributions in our library:
+- <cite>Kalman Filter</cite>
+- <cite>Extended Kalman Filter (EKF)</cite>
+- <cite>Unscented Kalman Filter (UKF)</cite>
+- <cite>Variational Kalman Filters</cite></p>
 </section>
 <section id="related-work">
 <h1>🔗 Related Work<a class="headerlink" href="#related-work" title="Link to this heading"></a></h1>
@@ -137,17 +128,6 @@ models</a></p></li>
 <li><p><strong>SciPy</strong> for advanced mathematical functions</p></li>
 <li><p><strong>Jupyter Notebooks</strong> for experimentation and visualization</p></li>
 </ul>
-<p>You can install the required packages using pip:</p>
-</section>
-<section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<ol class="arabic simple">
-<li><p>Clone the repository: <code class="docutils literal notranslate"><span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">git</span> <span class="pre">clone</span> <span class="pre">&lt;repository-url&gt;</span></code></p></li>
-<li><p>Navigate to the cloned directory:
-<code class="docutils literal notranslate"><span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">cd</span> <span class="pre">&lt;repository-directory&gt;</span></code></p></li>
-<li><p>Install the dependencies in editable mode:
-<code class="docutils literal notranslate"><span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">./</span></code></p></li>
-</ol>
 </section>
 <section id="usage">
 <h1>👨‍💻 Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h1>
