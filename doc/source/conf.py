@@ -17,6 +17,25 @@ sys.path.insert(0, os.path.abspath('../../src/'))
 
 from kalman import __version__
 
+# -- MySR ------------------------------------------------------------------
+
+extensions = [
+    'myst_parser',
+    # другие расширения
+]
+
+# Укажите суффиксы для исходных файлов
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+# Дополнительные настройки MyST (по желанию)
+myst_enable_extensions = [
+    "colon_fence",
+    "deflist",
+]
+myst_url_schemes = ["http", "https", "mailto"]
 
 # -- Project information -----------------------------------------------------
 
