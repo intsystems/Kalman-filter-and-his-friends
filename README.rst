@@ -19,6 +19,7 @@ implementation that aligns with existing structured state-space models.
 -------------------------
 
 We plan to implement the following distributions in our library:
+
 - `Kalman Filter`
 - `Extended Kalman Filter (EKF)`
 - `Unscented Kalman Filter (UKF)`
