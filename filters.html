@@ -66,6 +66,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#kalman.filters.BaseFilter.update"><code class="docutils literal notranslate"><span class="pre">BaseFilter.update()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#kalman.filters.ExtendedKalmanFilter"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kalman.filters.KalmanFilter"><code class="docutils literal notranslate"><span class="pre">KalmanFilter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.filters.KalmanFilter.predict"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.predict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.filters.KalmanFilter.project"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.project()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.filters.KalmanFilter.update"><code class="docutils literal notranslate"><span class="pre">KalmanFilter.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#kalman.filters.UnscentedKalmanFilter"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kalman.filters.VariationalKalmanFilter"><code class="docutils literal notranslate"><span class="pre">VariationalKalmanFilter</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -141,6 +150,81 @@ Returns:</p>
 </div></blockquote>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kalman.filters.ExtendedKalmanFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.filters.</span></span><span class="sig-name descname"><span class="pre">ExtendedKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/filters.html#ExtendedKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.ExtendedKalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Extended Kalman Filter class.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kalman.filters.KalmanFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.filters.</span></span><span class="sig-name descname"><span class="pre">KalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/filters.html#KalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.KalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Kalman Filter class.
+Attributes:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>process_matrix (torch.Tensor): State transition matrix (F)</dt><dd><p>Shape: (<a href="#id1"><span class="problematic" id="id2">*</span></a>, dim_x, dim_x)</p>
+</dd>
+<dt>measurement_matrix (torch.Tensor): Projection matrix (H)</dt><dd><p>Shape: (<a href="#id3"><span class="problematic" id="id4">*</span></a>, dim_z, dim_x)</p>
+</dd>
+<dt>process_noise (torch.Tensor): Uncertainty on the process (Q)</dt><dd><p>Shape: (<a href="#id5"><span class="problematic" id="id6">*</span></a>, dim_x, dim_x)</p>
+</dd>
+<dt>measurement_noise (torch.Tensor): Uncertainty on the measure (R)</dt><dd><p>Shape: (<a href="#id7"><span class="problematic" id="id8">*</span></a>, dim_z, dim_z)</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.KalmanFilter.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GaussianState</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GaussianState</span></span></span><a class="reference internal" href="_modules/kalman/filters.html#KalmanFilter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.KalmanFilter.predict" title="Link to this definition"></a></dt>
+<dd><p>Predict step of the Kalman Filter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.KalmanFilter.project">
+<span class="sig-name descname"><span class="pre">project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GaussianState</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precompute_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GaussianState</span></span></span><a class="reference internal" href="_modules/kalman/filters.html#KalmanFilter.project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.KalmanFilter.project" title="Link to this definition"></a></dt>
+<dd><p>Project the current state (usually the prior) onto the measurement space</p>
+<p>Use the measurement equation: z_k = H x_k + N(0, R).
+Support batch computation: You can provide multiple measurements, projections models (H, R)
+or/and multiple states. You just need to ensure that shapes are broadcastable.</p>
+<dl>
+<dt>Args:</dt><dd><p>state (GaussianState): Current state estimation (Usually the results of <cite>predict</cite>)
+measurement_matrix (Optional[torch.Tensor]): Overwrite the default projection matrix</p>
+<blockquote>
+<div><p>Shape: (<a href="#id9"><span class="problematic" id="id10">*</span></a>, dim_z, dim_x)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>measurement_noise (Optional[torch.Tensor]): Overwrite the default projection noise)</dt><dd><p>Shape: (<a href="#id11"><span class="problematic" id="id12">*</span></a>, dim_z, dim_z)</p>
+</dd>
+<dt>precompute_precision (bool): Precompute precision matrix (inverse covariance)</dt><dd><p>Done once to prevent more computations
+Default: True</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>GaussianState: Prior on the next state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.KalmanFilter.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GaussianState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GaussianState</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GaussianState</span></span></span><a class="reference internal" href="_modules/kalman/filters.html#KalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.KalmanFilter.update" title="Link to this definition"></a></dt>
+<dd><p>Update step of the Kalman Filter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kalman.filters.UnscentedKalmanFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.filters.</span></span><span class="sig-name descname"><span class="pre">UnscentedKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/filters.html#UnscentedKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.UnscentedKalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Unscented Kalman Filter class.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kalman.filters.VariationalKalmanFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.filters.</span></span><span class="sig-name descname"><span class="pre">VariationalKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/filters.html#VariationalKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.VariationalKalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Variational Kalman Filter class.</p>
 </dd></dl>
 
 </section>
