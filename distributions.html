@@ -70,8 +70,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="filters">
-<h1>Filters<a class="headerlink" href="#filters" title="Link to this heading"></a></h1>
+  <section id="module-kalman.filters">
+<span id="filters"></span><h1>Filters<a class="headerlink" href="#module-kalman.filters" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="kalman.filters.BaseFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.filters.</span></span><span class="sig-name descname"><span class="pre">BaseFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/filters.html#BaseFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.BaseFilter" title="Link to this definition"></a></dt>
+<dd><p>Abstract base class for Kalman Filters</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.BaseFilter.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/filters.html#BaseFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.BaseFilter.forward" title="Link to this definition"></a></dt>
+<dd><p>Processes an entire sequence of observations in shape (T, B, obs_dim).
+Returns all_states, pairs (all_means, all_covs) with shapes:</p>
+<blockquote>
+<div><p>all_means: (T, B, state_dim)
+all_covs:  (T, B, state_dim, state_dim)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.BaseFilter.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/filters.html#BaseFilter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.BaseFilter.predict" title="Link to this definition"></a></dt>
+<dd><p>Single-step predict.
+Returns:</p>
+<blockquote>
+<div><p>predicted_state_mean, predicted_state_cov</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.BaseFilter.predict_update">
+<span class="sig-name descname"><span class="pre">predict_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/filters.html#BaseFilter.predict_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.BaseFilter.predict_update" title="Link to this definition"></a></dt>
+<dd><p>Single-step predict and update in one function.
+Returns:</p>
+<blockquote>
+<div><p>updated_state_mean, updated_state_cov</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kalman.filters.BaseFilter.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/filters.html#BaseFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.filters.BaseFilter.update" title="Link to this definition"></a></dt>
+<dd><p>Single-step update.
+Returns:</p>
+<blockquote>
+<div><p>updated_state_mean, updated_state_cov</p>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
