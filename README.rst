@@ -1,114 +1,10 @@
-.. container::
-
-   ::
-
-      <h1> Kalman Filter and Extensions </h1>
-
-.. container::
-
-   ::
-
-      <img src="images/kalman.webp" width="500px" />
-
-.. raw:: html
-
-   <p align="center">
-
-.. raw:: html
-
-   </p>
-
-.. raw:: html
-
-   <table>
-
-.. raw:: html
-
-   <tr>
-
-.. raw:: html
-
-   <td align="left">
-
-Title
-
-.. raw:: html
-
-   </td>
-
-.. raw:: html
-
-   <td>
 
 Kalman Filter and Extensions
+-------------------------
 
-.. raw:: html
+**Authors**: Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk
 
-   </td>
-
-.. raw:: html
-
-   </tr>
-
-.. raw:: html
-
-   <tr>
-
-.. raw:: html
-
-   <td align="left">
-
-Authors
-
-.. raw:: html
-
-   </td>
-
-.. raw:: html
-
-   <td>
-
-Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk
-
-.. raw:: html
-
-   </td>
-
-.. raw:: html
-
-   </tr>
-
-.. raw:: html
-
-   <tr>
-
-.. raw:: html
-
-   <td align="left">
-
-Consultant
-
-.. raw:: html
-
-   </td>
-
-.. raw:: html
-
-   <td>
-
-Oleg Bakhteev, PhD
-
-.. raw:: html
-
-   </td>
-
-.. raw:: html
-
-   </tr>
-
-.. raw:: html
-
-   </table>
+**Consultant**: Oleg Bakhteev, PhD
 
 💡 Description
 --------------
@@ -122,9 +18,11 @@ implementation that aligns with existing structured state-space models.
 📌 Algorithms Implemented
 -------------------------
 
-We plan to implement the following distributions in our library: - [ ]
-**Kalman Filter** - [ ] **Extended Kalman Filter (EKF)** - [ ]
-**Unscented Kalman Filter (UKF)** - [ ] **Variational Kalman Filters**
+We plan to implement the following distributions in our library:
+- `Kalman Filter`
+- `Extended Kalman Filter (EKF)`
+- `Unscented Kalman Filter (UKF)`
+- `Variational Kalman Filters`
 
 🔗 Related Work
 ---------------
@@ -146,17 +44,6 @@ The project is implemented using:
 -  **NumPy** for numerical computations
 -  **SciPy** for advanced mathematical functions
 -  **Jupyter Notebooks** for experimentation and visualization
-
-You can install the required packages using pip:
-
-Installation
-------------
-
-1. Clone the repository: ``bash     git clone <repository-url>``
-2. Navigate to the cloned directory:
-   ``bash     cd <repository-directory>``
-3. Install the dependencies in editable mode:
-   ``bash     pip install -e ./``
 
 👨‍💻 Usage
 --------
