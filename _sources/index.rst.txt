@@ -6,11 +6,9 @@
 Welcome to Kalman filter and his friends!
 =========================================
 
-.. toctree::
-   :maxdepth: 1
+.. include:: ../../README.md
+   :parser: myst_parser.sphinx_
    :caption: Main Info:
-   
-   info.rst
 
 .. toctree::
    :maxdepth: 1
