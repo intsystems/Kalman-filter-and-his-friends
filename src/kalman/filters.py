@@ -9,7 +9,7 @@ from typing import Optional, overload
 import torch
 import torch.linalg
 
-from kalman.gaussian import GaussianState
+from gaussian import GaussianState
 class BaseFilter(nn.Module):
     """
     Abstract base class for Kalman Filters
@@ -108,7 +108,7 @@ class KalmanFilter(BaseFilter):
         if process_noise is None:
             process_noise = self.process_noise
         state_mean = process_matrix @ state.mean
-        state_cov = process_matrix @ state.cov @ process_matrix.transpose(-2, -1) + process_noise
+        state_cov = process_matrix @ state.covariance @ process_matrix.transpose(-2, -1) + process_noise
         return GaussianState(state_mean, state_cov)
 
 

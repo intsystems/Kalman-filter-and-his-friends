@@ -19,9 +19,9 @@ class GaussianState:
             This may be useful for some computations (E.G mahalanobis distance, likelihood) after a predict step.
             Shape: (*, dim, dim)
     """
-    def __init__(self, mean: torch.Tensor, cov: torch.Tensor, precision: Optional[torch.Tensor] = None):
+    def __init__(self, mean: torch.Tensor, covariance: torch.Tensor, precision: Optional[torch.Tensor] = None):
         self.mean = mean
-        self.cov = cov
+        self.covariance = covariance
         self.precision = precision
     
     def clone(self) -> "GaussianState":
