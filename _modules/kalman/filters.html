@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kalman.filters &mdash; Kalman filter and his friends  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Kalman filter and his friends
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html">Kalman Filter and Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#description">💡 Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#related-work">🔗 Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#tech-stack">📚 Tech Stack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#usage">👨‍💻 Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#links">📬 Links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian.html">Gaussian</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Kalman filter and his friends</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kalman.filters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kalman.filters</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.linalg</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianState</span>
+
+
+<div class="viewcode-block" id="BaseFilter">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.BaseFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseFilter</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class for Kalman Filters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span> <span class="o">=</span> <span class="n">state_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obs_dim</span> <span class="o">=</span> <span class="n">obs_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span> <span class="o">=</span> <span class="n">smooth</span>
+
+<div class="viewcode-block" id="BaseFilter.predict">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.BaseFilter.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> 
+        <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Single-step predict.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            predicted_state_mean, predicted_state_cov</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseFilter.update">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.BaseFilter.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> 
+        <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> 
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Single-step update.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            updated_state_mean, updated_state_cov</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    
+<div class="viewcode-block" id="BaseFilter.predict_update">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.BaseFilter.predict_update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Single-step predict and update in one function.</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            updated_state_mean, updated_state_cov</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">updated_state_mean</span><span class="p">,</span> <span class="n">updated_state_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state_mean</span><span class="p">,</span> <span class="n">state_cov</span><span class="p">,</span> <span class="n">measurement</span><span class="p">)</span>
+        <span class="n">predicted_state_mean</span><span class="p">,</span> <span class="n">predicted_state_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">updated_state_mean</span><span class="p">,</span> <span class="n">updated_state_cov</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">predicted_state_mean</span><span class="p">,</span> <span class="n">predicted_state_cov</span></div>
+
+
+<div class="viewcode-block" id="BaseFilter.forward">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.BaseFilter.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Processes an entire sequence of observations in shape (T, B, obs_dim).</span>
+<span class="sd">        Returns all_states, pairs (all_means, all_covs) with shapes:</span>
+<span class="sd">            all_means: (T, B, state_dim)</span>
+<span class="sd">            all_covs:  (T, B, state_dim, state_dim)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="KalmanFilter">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.KalmanFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">KalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Kalman Filter class.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        process_matrix (torch.Tensor): State transition matrix (F)</span>
+<span class="sd">            Shape: (*, dim_x, dim_x)</span>
+<span class="sd">        measurement_matrix (torch.Tensor): Projection matrix (H)</span>
+<span class="sd">            Shape: (*, dim_z, dim_x)</span>
+<span class="sd">        process_noise (torch.Tensor): Uncertainty on the process (Q)</span>
+<span class="sd">            Shape: (*, dim_x, dim_x)</span>
+<span class="sd">        measurement_noise (torch.Tensor): Uncertainty on the measure (R)</span>
+<span class="sd">            Shape: (*, dim_z, dim_z)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">process_matrix</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">measurement_matrix</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">process_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                 <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">process_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">measurement_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_matrix</span> <span class="o">=</span> <span class="n">process_matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measurement_matrix</span> <span class="o">=</span> <span class="n">measurement_matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_noise</span> <span class="o">=</span> <span class="n">process_noise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measurement_noise</span> <span class="o">=</span> <span class="n">measurement_noise</span>
+        
+<div class="viewcode-block" id="KalmanFilter.predict">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.KalmanFilter.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">process_matrix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">process_noise</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict step of the Kalman Filter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">process_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">process_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_matrix</span>
+        <span class="k">if</span> <span class="n">process_noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">process_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_noise</span>
+        <span class="n">state_mean</span> <span class="o">=</span> <span class="n">process_matrix</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">mean</span>
+        <span class="n">state_cov</span> <span class="o">=</span> <span class="n">process_matrix</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="n">process_matrix</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">process_noise</span>
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">state_mean</span><span class="p">,</span> <span class="n">state_cov</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="KalmanFilter.project">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.KalmanFilter.project">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">project</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">measurement_matrix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">precompute_precision</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Project the current state (usually the prior) onto the measurement space</span>
+
+<span class="sd">        Use the measurement equation: z_k = H x_k + N(0, R).</span>
+<span class="sd">        Support batch computation: You can provide multiple measurements, projections models (H, R)</span>
+<span class="sd">        or/and multiple states. You just need to ensure that shapes are broadcastable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state (GaussianState): Current state estimation (Usually the results of `predict`)</span>
+<span class="sd">            measurement_matrix (Optional[torch.Tensor]): Overwrite the default projection matrix</span>
+<span class="sd">                Shape: (*, dim_z, dim_x)</span>
+<span class="sd">            measurement_noise (Optional[torch.Tensor]): Overwrite the default projection noise)</span>
+<span class="sd">                Shape: (*, dim_z, dim_z)</span>
+<span class="sd">            precompute_precision (bool): Precompute precision matrix (inverse covariance)</span>
+<span class="sd">                Done once to prevent more computations</span>
+<span class="sd">                Default: True</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GaussianState: Prior on the next state</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">measurement_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">measurement_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_matrix</span>
+        <span class="k">if</span> <span class="n">measurement_noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">measurement_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_noise</span>
+
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">measurement_matrix</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">mean</span>
+        <span class="n">covariance</span> <span class="o">=</span> <span class="n">measurement_matrix</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="n">measurement_matrix</span><span class="o">.</span><span class="n">mT</span> <span class="o">+</span> <span class="n">measurement_noise</span>
+
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span>
+            <span class="n">mean</span><span class="p">,</span>
+            <span class="n">covariance</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="n">covariance</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span><span class="o">.</span><span class="n">mT</span>
+                <span class="k">if</span> <span class="n">precompute_precision</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+    
+
+<div class="viewcode-block" id="KalmanFilter.update">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.KalmanFilter.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
+        <span class="n">measure</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">projection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GaussianState</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">measurement_matrix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update step of the Kalman Filter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">measurement_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">measurement_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_matrix</span>
+        <span class="k">if</span> <span class="n">measurement_noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">measurement_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_noise</span>
+        <span class="k">if</span> <span class="n">measurement_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">measurement_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_matrix</span>
+        <span class="k">if</span> <span class="n">measurement_noise</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">measurement_noise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_noise</span>
+        <span class="k">if</span> <span class="n">projection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">projection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">measurement_matrix</span><span class="o">=</span><span class="n">measurement_matrix</span><span class="p">,</span> <span class="n">measurement_noise</span><span class="o">=</span><span class="n">measurement_noise</span><span class="p">)</span>
+
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">measure</span> <span class="o">-</span> <span class="n">projection</span><span class="o">.</span><span class="n">mean</span>
+
+        <span class="n">kalman_gain</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span> <span class="o">@</span> <span class="n">measurement_matrix</span><span class="o">.</span><span class="n">mT</span> <span class="o">@</span> <span class="n">projection</span><span class="o">.</span><span class="n">precision</span>
+
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mean</span> <span class="o">+</span> <span class="n">kalman_gain</span> <span class="o">@</span> <span class="n">residual</span>
+
+        <span class="n">covariance</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span> <span class="o">-</span> <span class="n">kalman_gain</span> <span class="o">@</span> <span class="n">measurement_matrix</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span>
+
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">covariance</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ExtendedKalmanFilter">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.ExtendedKalmanFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExtendedKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extended Kalman Filter class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="UnscentedKalmanFilter">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.UnscentedKalmanFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UnscentedKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unscented Kalman Filter class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="VariationalKalmanFilter">
+<a class="viewcode-back" href="../../filters.html#kalman.filters.VariationalKalmanFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VariationalKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Variational Kalman Filter class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
