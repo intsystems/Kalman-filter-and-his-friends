@@ -9,7 +9,9 @@ from typing import Optional, overload
 import torch
 import torch.linalg
 
-from gaussian import GaussianState
+from kalman.gaussian import GaussianState
+
+
 class BaseFilter(nn.Module):
     """
     Abstract base class for Kalman Filters
