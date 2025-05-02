@@ -2,12 +2,7 @@ from typing import Tuple
 
 import torch
 from torch import nn
-import dataclasses
-import contextlib
-from typing import Optional, overload
-
-import torch
-import torch.linalg
+from typing import Optional
 
 from kalman.gaussian import GaussianState
 
@@ -192,17 +187,10 @@ class KalmanFilter(BaseFilter):
 
         return GaussianState(mean, covariance)
 
+
 class ExtendedKalmanFilter(BaseFilter):
     """
     Extended Kalman Filter class.
-    """
-    def __init__(self, state_dim: int, obs_dim: int):
-        super().__init__(state_dim, obs_dim)
-
-
-class UnscentedKalmanFilter(BaseFilter):
-    """
-    Unscented Kalman Filter class.
     """
     def __init__(self, state_dim: int, obs_dim: int):
         super().__init__(state_dim, obs_dim)
