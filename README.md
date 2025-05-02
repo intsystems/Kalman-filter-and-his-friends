@@ -65,16 +65,18 @@ You can install the required packages using pip:
 
 1. Clone the repository:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/intsystems/Kalman-filter-and-his-friends /tmp/Kalman-filter-and-his-friends
     ```
-2. Navigate to the cloned directory:
+2. Install the dependencies:
     ```bash
-    cd <repository-directory>
+    python3 -m pip install /tmp/Kalman-filter-and-his-friends/src/
     ```
-3. Install the dependencies in editable mode:
-    ```bash
-    pip install -e ./
-    ```
+
+Uninstall:
+
+```bash
+python3 -m pip uninstall kalman
+```
 
 ## 👨‍💻 Usage
 
@@ -94,6 +96,7 @@ More detailed examples and tutorials will be available in the documentation.
 
 ## 📬 Links
 
+- [Library Documentation](https://intsystems.github.io/Kalman-filter-and-his-friends/)
 - [Project Documentation](./docs/plan.md)
 - [Project Plan](...)
 - [Matvei Kreinin](https://github.com/kreininmv), [Maria Nikitina](https://github.com/NikitinaMaria), [Petr Babkin](https://github.com/petr-parker), [Anastasia Voznyuk](https://github.com/natriistorm)
