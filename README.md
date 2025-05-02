@@ -38,9 +38,9 @@ This project focuses on implementing Kalman Filters and their extensions in a si
 ## 📌 Algorithms Implemented
 
 We plan to implement the following distributions in our library:
-- [ ] **Kalman Filter**
+- [x] **Kalman Filter**
 - [ ] **Extended Kalman Filter (EKF)**
-- [ ] **Unscented Kalman Filter (UKF)**
+- [x] **Unscented Kalman Filter (UKF)**
 - [ ] **Variational Kalman Filters**
 
 ## 🔗 Related Work

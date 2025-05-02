@@ -7,7 +7,7 @@ Requirements
 
 - Python 3.*
 - pip 20.0.2
-- torch 2.6.0
+- torch 2.7.0
 
 Installing by using PyPi
 ========================
