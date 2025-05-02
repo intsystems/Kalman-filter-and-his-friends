@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kalman.unscented &mdash; Kalman filter and his friends  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Kalman filter and his friends
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html">Kalman Filter and Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#description">💡 Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#related-work">🔗 Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#tech-stack">📚 Tech Stack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#usage">👨‍💻 Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#links">📬 Links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unscented.html">Gaussian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian.html">Gaussian</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Kalman filter and his friends</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kalman.unscented</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kalman.unscented</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.linalg</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianState</span>
+
+<div class="viewcode-block" id="UnscentedKalmanFilter">
+<a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UnscentedKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unscented Kalman Filter class.</span>
+<span class="sd">    Implements the UKF using the scaled unscented transformation.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        alpha (float): Determines the spread of sigma points (usually 1e-3)</span>
+<span class="sd">        beta (float): Incorporates prior knowledge of the distribution (2 for Gaussian)</span>
+<span class="sd">        kappa (float): Secondary scaling parameter (usually 0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> 
+                 <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+                 <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+                 <span class="n">kappa</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">kappa</span>
+        
+        <span class="c1"># Compute lambda parameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">state_dim</span> <span class="o">+</span> <span class="n">kappa</span><span class="p">)</span> <span class="o">-</span> <span class="n">state_dim</span>
+        
+        <span class="c1"># Weights for mean and covariance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Wm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">state_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Mean weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Wc</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">state_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Covariance weights</span>
+        
+        <span class="c1"># Initialize weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_weights</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute weights for sigma points.&quot;&quot;&quot;</span>
+        <span class="n">state_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span>
+        <span class="n">lambda_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span>
+        
+        <span class="c1"># Weight for the mean of the 0th sigma point</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Wm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">lambda_</span> <span class="o">/</span> <span class="p">(</span><span class="n">state_dim</span> <span class="o">+</span> <span class="n">lambda_</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Wc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Wm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+        
+        <span class="c1"># Weights for other sigma points</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">state_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Wm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">state_dim</span> <span class="o">+</span> <span class="n">lambda_</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Wc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Wm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_sigma_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute sigma points using the scaled unscented transformation.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            mean: State mean (..., state_dim, 1)</span>
+<span class="sd">            cov: State covariance (..., state_dim, state_dim)</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Sigma points (..., 2*state_dim+1, state_dim, 1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span>
+        <span class="n">lambda_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lambda_</span>
+        
+        <span class="c1"># Compute matrix square root of (state_dim + lambda) * cov</span>
+        <span class="c1"># scaling = torch.linalg.cholesky((state_dim + lambda_) * cov)</span>
+        <span class="n">scaling</span> <span class="o">=</span> <span class="p">(</span><span class="n">state_dim</span> <span class="o">+</span> <span class="n">lambda_</span><span class="p">)</span> <span class="o">*</span> <span class="n">cov</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">scaling</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">scaling</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="c1"># If Cholesky fails, add small diagonal noise and try again</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">scaling</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">scaling</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">scaling</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">scaling</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+        
+        <span class="c1"># Create sigma points matrix with correct shape</span>
+        <span class="n">sigma_points</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">*</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">state_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> 
+                                <span class="n">device</span><span class="o">=</span><span class="n">mean</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">mean</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        
+        <span class="c1"># First sigma point is the mean</span>
+        <span class="n">sigma_points</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mean</span>
+        
+        <span class="c1"># Remaining sigma points</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">state_dim</span><span class="p">):</span>
+            <span class="c1"># Get the i-th column of the scaling matrix and reshape properly</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="n">scaling</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># shape: (..., state_dim, 1)</span>
+            
+            <span class="c1"># Add and subtract columns to create sigma points</span>
+            <span class="n">sigma_points</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">col</span>
+            <span class="n">sigma_points</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">state_dim</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">-</span> <span class="n">col</span>
+            
+        <span class="k">return</span> <span class="n">sigma_points</span>
+    
+<div class="viewcode-block" id="UnscentedKalmanFilter.predict">
+<a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
+        <span class="n">process_model</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">process_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict step of the UKF.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            state: Current state estimate</span>
+<span class="sd">            process_model: Nonlinear state transition function</span>
+<span class="sd">            process_noise: Process noise covariance</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Predicted state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate sigma points</span>
+        <span class="n">sigma_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_sigma_points</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>
+        
+        <span class="c1"># Propagate sigma points through process model</span>
+        <span class="n">predicted_sigma_points</span> <span class="o">=</span> <span class="n">process_model</span><span class="p">(</span><span class="n">sigma_points</span><span class="p">)</span>
+        
+        <span class="c1"># Compute predicted mean and covariance</span>
+        <span class="n">pred_mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Wm</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">predicted_sigma_points</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">*</span> <span class="n">predicted_sigma_points</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">3</span><span class="p">)</span>
+        
+        <span class="c1"># Compute predicted covariance</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">predicted_sigma_points</span> <span class="o">-</span> <span class="n">pred_mean</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">pred_cov</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Wc</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">*</span> <span class="p">(</span><span class="n">diff</span> <span class="o">@</span> <span class="n">diff</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">pred_cov</span> <span class="o">=</span> <span class="n">pred_cov</span> <span class="o">+</span> <span class="n">process_noise</span>
+        
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">pred_mean</span><span class="p">,</span> <span class="n">pred_cov</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="UnscentedKalmanFilter.update">
+<a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">measurement_model</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update step of the UKF.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            state: Predicted state from predict step</span>
+<span class="sd">            measurement: Current measurement</span>
+<span class="sd">            measurement_model: Nonlinear measurement function</span>
+<span class="sd">            measurement_noise: Measurement noise covariance</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Updated state estimate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate sigma points</span>
+        <span class="n">sigma_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_sigma_points</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>
+        
+        <span class="c1"># Propagate sigma points through measurement model</span>
+        <span class="n">measurement_sigma_points</span> <span class="o">=</span> <span class="n">measurement_model</span><span class="p">(</span><span class="n">sigma_points</span><span class="p">)</span>
+        
+        <span class="c1"># Compute predicted measurement mean and covariance</span>
+        <span class="n">meas_mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Wm</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">measurement_sigma_points</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">*</span> <span class="n">measurement_sigma_points</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">3</span><span class="p">)</span>
+        
+        <span class="c1"># Compute measurement covariance and cross-covariance</span>
+        <span class="n">meas_diff</span> <span class="o">=</span> <span class="n">measurement_sigma_points</span> <span class="o">-</span> <span class="n">meas_mean</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">state_diff</span> <span class="o">=</span> <span class="n">sigma_points</span> <span class="o">-</span> <span class="n">state</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+        
+        <span class="n">meas_cov</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Wc</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meas_diff</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">*</span> 
+                   <span class="p">(</span><span class="n">meas_diff</span> <span class="o">@</span> <span class="n">meas_diff</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">meas_cov</span> <span class="o">=</span> <span class="n">meas_cov</span> <span class="o">+</span> <span class="n">measurement_noise</span>
+        
+        <span class="n">cross_cov</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Wc</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">state_diff</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">*</span> 
+                    <span class="p">(</span><span class="n">state_diff</span> <span class="o">@</span> <span class="n">meas_diff</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">3</span><span class="p">)</span>
+        
+        <span class="c1"># Compute Kalman gain</span>
+        <span class="n">kalman_gain</span> <span class="o">=</span> <span class="n">cross_cov</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">meas_cov</span><span class="p">)</span>
+        
+        <span class="c1"># Compute updated state</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">measurement</span> <span class="o">-</span> <span class="n">meas_mean</span>
+        <span class="n">updated_mean</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mean</span> <span class="o">+</span> <span class="n">kalman_gain</span> <span class="o">@</span> <span class="n">residual</span>
+        <span class="n">updated_cov</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span> <span class="o">-</span> <span class="n">kalman_gain</span> <span class="o">@</span> <span class="n">meas_cov</span> <span class="o">@</span> <span class="n">kalman_gain</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">updated_mean</span><span class="p">,</span> <span class="n">updated_cov</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="UnscentedKalmanFilter.predict_update">
+<a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.predict_update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">process_model</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">process_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">measurement_model</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Combined predict and update steps.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            state: Current state estimate</span>
+<span class="sd">            measurement: Current measurement</span>
+<span class="sd">            process_model: Nonlinear state transition function</span>
+<span class="sd">            process_noise: Process noise covariance</span>
+<span class="sd">            measurement_model: Nonlinear measurement function</span>
+<span class="sd">            measurement_noise: Measurement noise covariance</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Updated state estimate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Predict step</span>
+        <span class="n">predicted_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">process_model</span><span class="p">,</span> <span class="n">process_noise</span><span class="p">)</span>
+        
+        <span class="c1"># Update step</span>
+        <span class="n">updated_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">predicted_state</span><span class="p">,</span> <span class="n">measurement</span><span class="p">,</span> <span class="n">measurement_model</span><span class="p">,</span> <span class="n">measurement_noise</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">updated_state</span></div>
+
+    
+<div class="viewcode-block" id="UnscentedKalmanFilter.forward">
+<a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+               <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">process_model</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+               <span class="n">process_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">measurement_model</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+               <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+               <span class="n">initial_state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Processes an entire sequence of observations.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            observations: Measurement sequence (T, B, obs_dim)</span>
+<span class="sd">            process_model: Nonlinear state transition function</span>
+<span class="sd">            process_noise: Process noise covariance</span>
+<span class="sd">            measurement_model: Nonlinear measurement function</span>
+<span class="sd">            measurement_noise: Measurement noise covariance</span>
+<span class="sd">            initial_state: Initial state estimate</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple of (all_means, all_covs) with shapes:</span>
+<span class="sd">                all_means: (T, B, state_dim, 1)</span>
+<span class="sd">                all_covs: (T, B, state_dim, state_dim)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
+        
+        <span class="n">all_means</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">all_covs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">)</span>
+        
+        <span class="n">current_state</span> <span class="o">=</span> <span class="n">initial_state</span>
+        
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+            <span class="c1"># Predict</span>
+            <span class="n">predicted_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">current_state</span><span class="p">,</span> <span class="n">process_model</span><span class="p">,</span> <span class="n">process_noise</span><span class="p">)</span>
+            
+            <span class="c1"># Update</span>
+            <span class="n">measurement</span> <span class="o">=</span> <span class="n">observations</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">updated_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">predicted_state</span><span class="p">,</span> <span class="n">measurement</span><span class="p">,</span> <span class="n">measurement_model</span><span class="p">,</span> <span class="n">measurement_noise</span><span class="p">)</span>
+            
+            <span class="c1"># Store results</span>
+            <span class="n">all_means</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_state</span><span class="o">.</span><span class="n">mean</span>
+            <span class="n">all_covs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_state</span><span class="o">.</span><span class="n">covariance</span>
+            
+            <span class="c1"># Update current state</span>
+            <span class="n">current_state</span> <span class="o">=</span> <span class="n">updated_state</span>
+            
+        <span class="k">return</span> <span class="n">all_means</span><span class="p">,</span> <span class="n">all_covs</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

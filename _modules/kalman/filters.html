@@ -57,6 +57,7 @@
 <p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unscented.html">Gaussian</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../gaussian.html">Gaussian</a></li>
 </ul>
 
@@ -89,12 +90,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch.linalg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kalman.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianState</span>
 
@@ -306,22 +302,12 @@
 </div>
 
 
+
 <div class="viewcode-block" id="ExtendedKalmanFilter">
 <a class="viewcode-back" href="../../filters.html#kalman.filters.ExtendedKalmanFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtendedKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extended Kalman Filter class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="UnscentedKalmanFilter">
-<a class="viewcode-back" href="../../filters.html#kalman.filters.UnscentedKalmanFilter">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">UnscentedKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unscented Kalman Filter class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">)</span></div>
