@@ -24,6 +24,7 @@ Welcome to Kalman filter and his friends!
    :caption: Packages:
 
    filters.rst
+   unscented.rst
    gaussian.rst
 
 
