@@ -1,255 +1,212 @@
-from typing import Tuple
+# kalman/unscented.py
+from typing import Callable, Tuple, Optional
 
 import torch
-import torch.linalg
 
-from kalman.filters import BaseFilter
-from kalman.gaussian import GaussianState
+from kalman.gaussian import GaussianState          # <-- already in gaussian.py
+from kalman.filters import BaseFilter              # <-- your abstract base
+
 
 class UnscentedKalmanFilter(BaseFilter):
+    r"""
+    Scaled–sigma‑point Unscented Kalman Filter.
+
+    Parameters
+    ----------
+    state_dim, obs_dim : int
+        Dimensions *n* and *m*.
+    f, h : Callable[[torch.Tensor], torch.Tensor]
+        Process / measurement models that expect sigma‑points of shape
+        ``(..., 2n + 1, n)`` and return the propagated sigma‑points
+        with the same shape.
+    alpha, beta, kappa : float
+        Standard UKF scaling parameters.
+    Q, R : torch.Tensor, optional
+        Process‑ and measurement‑noise covariances.
+    init_mean, init_cov : torch.Tensor, optional
+        Initial posterior (after a fictitious step 0 update).
+    eps : float
+        Jitter added to all Cholesky factorizations and post‑update
+        covariances for numerical stability.
     """
-    Unscented Kalman Filter class.
-    Implements the UKF using the scaled unscented transformation.
-    
-    Attributes:
-        alpha (float): Determines the spread of sigma points (usually 1e-3)
-        beta (float): Incorporates prior knowledge of the distribution (2 for Gaussian)
-        kappa (float): Secondary scaling parameter (usually 0)
-    """
-    def __init__(self, 
-                 state_dim: int, 
-                 obs_dim: int,
-                 alpha: float = 1e-3,
-                 beta: float = 2.0,
-                 kappa: float = 0.0):
+
+    # ------------------------------------------------------------------ #
+    #                           constructor                              #
+    # ------------------------------------------------------------------ #
+    def __init__(
+        self,
+        state_dim: int,
+        obs_dim: int,
+        f: Callable[[torch.Tensor], torch.Tensor],
+        h: Callable[[torch.Tensor], torch.Tensor],
+        *,
+        alpha: float = 1e-3,
+        beta: float = 2.0,
+        kappa: float = 0.0,
+        Q: Optional[torch.Tensor] = None,
+        R: Optional[torch.Tensor] = None,
+        init_mean: Optional[torch.Tensor] = None,
+        init_cov: Optional[torch.Tensor] = None,
+        eps=1e-7
+    ):
         super().__init__(state_dim, obs_dim)
-        self.alpha = alpha
-        self.beta = beta
-        self.kappa = kappa
+        self.f, self.h = f, h
+        self.register_buffer('Q', Q)
+        self.register_buffer('R', R)
+
+        n = state_dim
+        lam = alpha**2 * (n + kappa) - n
+        self._gamma = torch.sqrt(torch.tensor(n + lam, dtype=Q.dtype))
+        self.eps = eps
         
-        # Compute lambda parameter
-        self.lambda_ = alpha**2 * (state_dim + kappa) - state_dim
-        
-        # Weights for mean and covariance
-        self.Wm = torch.zeros(2 * state_dim + 1)  # Mean weights
-        self.Wc = torch.zeros(2 * state_dim + 1)  # Covariance weights
-        
-        # Initialize weights
-        self._compute_weights()
-    
-    def _compute_weights(self):
-        """Compute weights for sigma points."""
-        state_dim = self.state_dim
-        lambda_ = self.lambda_
-        
-        # Weight for the mean of the 0th sigma point
-        self.Wm[0] = lambda_ / (state_dim + lambda_)
-        self.Wc[0] = self.Wm[0] + (1 - self.alpha**2 + self.beta)
-        
-        # Weights for other sigma points
-        for i in range(1, 2 * state_dim + 1):
-            self.Wm[i] = 1 / (2 * (state_dim + lambda_))
-            self.Wc[i] = self.Wm[i]
-    
-    def _compute_sigma_points(self, mean: torch.Tensor, cov: torch.Tensor) -> torch.Tensor:
+        # weights (registered so they automatically follow device / dtype)
+        Wm = torch.empty(2 * n + 1, dtype=Q.dtype)
+        Wc = torch.empty_like(Wm)
+        Wm[0] = lam / (n + lam)
+        Wc[0] = Wm[0] + (1 - alpha**2 + beta)
+        Wm[1:] = 0.5 / (n + lam)
+        Wc[1:] = Wm[1:]
+        self.register_buffer('Wm', Wm)
+        self.register_buffer('Wc', Wc)
+
+        # noises
+        eye_x = torch.eye(state_dim)
+        eye_z = torch.eye(obs_dim)
+        self.register_buffer("Q", eye_x if Q is None else Q)
+        self.register_buffer("R", eye_z if R is None else R)
+
+        # initial posterior
+        self.register_buffer("_init_mean", torch.zeros(state_dim) if init_mean is None else init_mean)
+        self.register_buffer("_init_cov",  eye_x.clone()     if init_cov  is None else init_cov)
+
+    # ------------------------------------------------ sigma‑points
+    def _sigma_points(self, mean: torch.Tensor, cov: torch.Tensor) -> torch.Tensor:
         """
-        Compute sigma points using the scaled unscented transformation.
-        
-        Args:
-            mean: State mean (..., state_dim, 1)
-            cov: State covariance (..., state_dim, state_dim)
-            
-        Returns:
-            Sigma points (..., 2*state_dim+1, state_dim, 1)
+        mean (..., n) → sigma (..., 2n+1, n)
         """
-        state_dim = self.state_dim
-        lambda_ = self.lambda_
-        
-        # Compute matrix square root of (state_dim + lambda) * cov
-        # scaling = torch.linalg.cholesky((state_dim + lambda_) * cov)
-        scaling = (state_dim + lambda_) * cov
+        n = mean.shape[-1]
+        #chol = torch.linalg.cholesky(cov)                     # (..., n, n)
         try:
-            scaling = torch.linalg.cholesky(scaling)
+            chol = torch.linalg.cholesky(cov)                 # (..., n, n)
         except RuntimeError:
             # If Cholesky fails, add small diagonal noise and try again
-            eps = 1e-5 * torch.eye(state_dim, device=scaling.device, dtype=scaling.dtype)
-            scaling = torch.linalg.cholesky(scaling + eps)
-        
-        # Create sigma points matrix with correct shape
-        sigma_points = torch.zeros(*mean.shape[:-2], 2 * state_dim + 1, state_dim, 1, 
-                                device=mean.device, dtype=mean.dtype)
-        
-        # First sigma point is the mean
-        sigma_points[..., 0, :, :] = mean
-        
-        # Remaining sigma points
-        for i in range(state_dim):
-            # Get the i-th column of the scaling matrix and reshape properly
-            col = scaling[..., :, i:i+1]  # shape: (..., state_dim, 1)
-            
-            # Add and subtract columns to create sigma points
-            sigma_points[..., i+1, :, :] = mean + col
-            sigma_points[..., state_dim+i+1, :, :] = mean - col
-            
-        return sigma_points
-    
-    def predict(
-        self, 
-        state: GaussianState,
-        process_model: callable,
-        process_noise: torch.Tensor
-    ) -> GaussianState:
-        """
-        Predict step of the UKF.
-        
-        Args:
-            state: Current state estimate
-            process_model: Nonlinear state transition function
-            process_noise: Process noise covariance
-            
-        Returns:
-            Predicted state
-        """
-        # Generate sigma points
-        sigma_points = self._compute_sigma_points(state.mean, state.covariance)
-        
-        # Propagate sigma points through process model
-        predicted_sigma_points = process_model(sigma_points)
-        
-        # Compute predicted mean and covariance
-        pred_mean = (self.Wm.reshape(-1, *([1]*(len(predicted_sigma_points.shape)-1))) * predicted_sigma_points).sum(dim=-3)
-        
-        # Compute predicted covariance
-        diff = predicted_sigma_points - pred_mean.unsqueeze(-3)
-        pred_cov = (self.Wc.reshape(-1, *([1]*(len(diff.shape)-1))) * (diff @ diff.transpose(-2, -1))).sum(dim=-3)
-        pred_cov = pred_cov + process_noise
-        
-        return GaussianState(pred_mean, pred_cov)
-    
-    def update(
+            eps = self.eps * torch.eye(self.state_dim, device=cov.device, dtype=cov.dtype)
+            chol = torch.linalg.cholesky(cov + eps)
+
+        sigma = [mean]                                       # μ
+        scaled = self._gamma * chol                          # (..., n, n)
+        for i in range(n):
+            col = scaled[..., :, i]                          # (..., n)
+            sigma.append(mean + col)
+            sigma.append(mean - col)
+        return torch.stack(sigma, dim=-2)                    # (..., 2n+1, n)
+
+    # ------------------------------------------------ unscented transform
+    def _unscented_transform(
         self,
-        state: GaussianState,
-        measurement: torch.Tensor,
-        measurement_model: callable,
-        measurement_noise: torch.Tensor
-    ) -> GaussianState:
+        sigma: torch.Tensor,
+        noise_cov: torch.Tensor,
+        fn: Callable[[torch.Tensor], torch.Tensor],
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-        Update step of the UKF.
-        
-        Args:
-            state: Predicted state from predict step
-            measurement: Current measurement
-            measurement_model: Nonlinear measurement function
-            measurement_noise: Measurement noise covariance
-            
-        Returns:
-            Updated state estimate
+        sigma (..., 2n+1, n) → (mean (..., d),
+                                cov  (..., d, d),
+                                y_sigma (..., 2n+1, d))
         """
-        # Generate sigma points
-        sigma_points = self._compute_sigma_points(state.mean, state.covariance)
-        
-        # Propagate sigma points through measurement model
-        measurement_sigma_points = measurement_model(sigma_points)
-        
-        # Compute predicted measurement mean and covariance
-        meas_mean = (self.Wm.reshape(-1, *([1]*(len(measurement_sigma_points.shape)-1))) * measurement_sigma_points).sum(dim=-3)
-        
-        # Compute measurement covariance and cross-covariance
-        meas_diff = measurement_sigma_points - meas_mean.unsqueeze(-3)
-        state_diff = sigma_points - state.mean.unsqueeze(-3)
-        
-        meas_cov = (self.Wc.reshape(-1, *([1]*(len(meas_diff.shape)-1))) * 
-                   (meas_diff @ meas_diff.transpose(-2, -1))).sum(dim=-3)
-        meas_cov = meas_cov + measurement_noise
-        
-        cross_cov = (self.Wc.reshape(-1, *([1]*(len(state_diff.shape)-1))) * 
-                    (state_diff @ meas_diff.transpose(-2, -1))).sum(dim=-3)
-        
-        # Compute Kalman gain
-        kalman_gain = cross_cov @ torch.linalg.inv(meas_cov)
-        
-        # Compute updated state
-        residual = measurement - meas_mean
-        updated_mean = state.mean + kalman_gain @ residual
-        updated_cov = state.covariance - kalman_gain @ meas_cov @ kalman_gain.transpose(-2, -1)
-        
-        return GaussianState(updated_mean, updated_cov)
+        y_sigma = fn(sigma)                                  # (..., 2n+1, d)
+
+        # mean
+        y_mean = torch.sum(self.Wm[..., None] * y_sigma, dim=-2)
+
+        # covariance
+        y_diff = y_sigma - y_mean.unsqueeze(-2)              # (..., 2n+1, d)
+        y_cov = torch.sum(
+            self.Wc[..., None, None]
+            * y_diff.unsqueeze(-1) * y_diff.unsqueeze(-2),   # outer prod
+            dim=-3,
+        )
+        y_cov = y_cov + noise_cov
+        return y_mean, y_cov, y_sigma
+
+    # ------------------------------------------------ predict / update
+    @torch.no_grad()
+    def predict_(self, state_mean: torch.Tensor, state_cov: torch.Tensor):
+        sigma = self._sigma_points(state_mean, state_cov)
+        f = lambda x: self.f(x)                              # expects (..., n) → (..., n)
+        pred_mean, pred_cov, _ = self._unscented_transform(sigma, self.Q, f)
+        return pred_mean, pred_cov
+
+    @torch.no_grad()
+    def update_(self, state_mean: torch.Tensor, state_cov: torch.Tensor, measurement: torch.Tensor):
+        # 1. сигма‑точки из априорного распределения
+        sigma = self._sigma_points(state_mean, state_cov)
+
+        # 2. прогноз состояния
+        f = lambda x: self.f(x)
+        x_mean, x_cov, x_sigma = self._unscented_transform(sigma, self.Q, f)
+
+        # 3. прогноз измерения
+        h = lambda x: self.h(x)
+        z_mean, z_cov, z_sigma = self._unscented_transform(x_sigma, self.R, h)
+
+        # 4. перекрестная ковариация P_xz
+        x_diff = x_sigma - x_mean.unsqueeze(-2)              # (..., 2n+1, n)
+        z_diff = z_sigma - z_mean.unsqueeze(-2)              # (..., 2n+1, m)
+        P_xz = torch.sum(
+            self.Wc[..., None, None]
+            * x_diff.unsqueeze(-1) * z_diff.unsqueeze(-2),   # (...,2n+1,n,m)
+            dim=-3,
+        )                                                    # (..., n, m)
+
+        # 5. Калман‑усиление
+        K = P_xz @ torch.linalg.inv(z_cov)                   # (..., n, m)
+
+        # 6. корректировка
+        y = measurement - z_mean                             # (..., m)
+        upd_mean = x_mean + K @ y                            # (..., n)
+        upd_cov = x_cov - K @ z_cov @ K.mT                   # (..., n, n)
+        return upd_mean, upd_cov
     
-    def predict_update(
-        self,
-        state: GaussianState,
-        measurement: torch.Tensor,
-        process_model: callable,
-        process_noise: torch.Tensor,
-        measurement_model: callable,
-        measurement_noise: torch.Tensor
-    ) -> GaussianState:
+    # ================================================================== #
+    #                   high‑level GaussianState API                     #
+    # ================================================================== #
+    def predict(self, state: GaussianState) -> GaussianState:
+        m, P = self.predict_(state.mean, state.covariance)
+        return GaussianState(m, P)
+
+    def update(self, state: GaussianState, measurement: torch.Tensor) -> GaussianState:
+        m, P = self.update_(state.mean, state.covariance, measurement)
+        return GaussianState(m, P)
+
+    def predict_update(self, state: GaussianState, measurement: torch.Tensor) -> GaussianState:
+        return self.update(self.predict(state), measurement)
+
+    # ================================================================== #
+    #                        full sequence pass                          #
+    # ================================================================== #
+    def forward(self, observations: torch.Tensor):
         """
-        Combined predict and update steps.
-        
-        Args:
-            state: Current state estimate
-            measurement: Current measurement
-            process_model: Nonlinear state transition function
-            process_noise: Process noise covariance
-            measurement_model: Nonlinear measurement function
-            measurement_noise: Measurement noise covariance
-            
-        Returns:
-            Updated state estimate
+        Filter an observation sequence of shape ``(T, B, obs_dim, 1)``.
+
+        Returns
+        -------
+        traj_state : GaussianState
+            Posterior over the full trajectory (means & covariances stacked
+            along time).
+        (means, covs) : Tuple[torch.Tensor, torch.Tensor]
+            Raw tensors with shapes ``(T, B, n, 1)`` and ``(T, B, n, n)``.
         """
-        # Predict step
-        predicted_state = self.predict(state, process_model, process_noise)
-        
-        # Update step
-        updated_state = self.update(predicted_state, measurement, measurement_model, measurement_noise)
-        
-        return updated_state
-    
-    def forward(self, 
-               observations: torch.Tensor,
-               process_model: callable,
-               process_noise: torch.Tensor,
-               measurement_model: callable,
-               measurement_noise: torch.Tensor,
-               initial_state: GaussianState) -> Tuple[torch.Tensor, torch.Tensor]:
-        """
-        Processes an entire sequence of observations.
-        
-        Args:
-            observations: Measurement sequence (T, B, obs_dim)
-            process_model: Nonlinear state transition function
-            process_noise: Process noise covariance
-            measurement_model: Nonlinear measurement function
-            measurement_noise: Measurement noise covariance
-            initial_state: Initial state estimate
-            
-        Returns:
-            Tuple of (all_means, all_covs) with shapes:
-                all_means: (T, B, state_dim, 1)
-                all_covs: (T, B, state_dim, state_dim)
-        """
-        T = observations.shape[0]
-        B = observations.shape[1] if len(observations.shape) > 1 else 1
-        
-        all_means = torch.zeros(T, B, self.state_dim, 1)
-        all_covs = torch.zeros(T, B, self.state_dim, self.state_dim)
-        
-        current_state = initial_state
-        
+        T, B, _ = observations.shape        
+        means = self._init_mean.expand(B, -1).to(observations.device)
+        covs = self._init_cov.expand(B, -1, -1).to(observations.device)
+
+        mean_t = torch.zeros(B, self.state_dim, device=observations.device, dtype=observations.dtype)
+        cov_t = torch.eye(self.state_dim, device=observations.device, dtype=observations.dtype).expand(B, -1, -1)
+
         for t in range(T):
-            # Predict
-            predicted_state = self.predict(current_state, process_model, process_noise)
-            
-            # Update
-            measurement = observations[t]
-            updated_state = self.update(predicted_state, measurement, measurement_model, measurement_noise)
-            
-            # Store results
-            all_means[t] = updated_state.mean
-            all_covs[t] = updated_state.covariance
-            
-            # Update current state
-            current_state = updated_state
-            
-        return all_means, all_covs
+            mean_t, cov_t = self.update(mean_t, cov_t, observations[t])
+            means[t] = mean_t
+            covs[t] = cov_t
+            mean_t, cov_t = self.predict(mean_t, cov_t)
+
+        return GaussianState(means, covs), means, covs

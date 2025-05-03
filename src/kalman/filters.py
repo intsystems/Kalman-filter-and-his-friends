@@ -105,6 +105,7 @@ class KalmanFilter(BaseFilter):
         if process_noise is None:
             process_noise = self.process_noise
         state_mean = process_matrix @ state.mean
+        
         state_cov = process_matrix @ state.covariance @ process_matrix.transpose(-2, -1) + process_noise
         return GaussianState(state_mean, state_cov)
 
