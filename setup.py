@@ -2,14 +2,14 @@ import io
 import re
 from setuptools import setup, find_packages
 
-from kalman import __version__
+from src.kalman import __version__
 
 def read(file_path):
     with io.open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
 
-readme = read('README.rst')
+readme = read('src/README.rst')
 # вычищаем локальные версии из файла requirements (согласно PEP440)
 requirements = '\n'.join(
     re.findall(r'^([^\s^+]+).*$',
