@@ -8,10 +8,10 @@
 
 <p align="center">
     <a href="">
-        <img alt="Coverage" src="https://github.com/intsystems/Kalman-filter-and-his-friends/actions/workflows/testing.yml/badge.svg" />
+        <img alt="Docs" src="https://github.com/intsystems/Kalman-filter-and-his-friends/actions/workflows/docs.yml/badge.svg" />
     </a>
     <a href="">
-        <img alt="Docs" src="https://github.com/intsystems/Kalman-filter-and-his-friends/actions/workflows/docs.yml/badge.svg" />
+        <img alt="Blog" src="https://img.shields.io/badge/Medium-12100E?style=flat&logo=medium&logoColor=white" />
     </a>
 </p>
 
@@ -91,16 +91,14 @@ kf.predict()
 kf.update(torch.tensor([1.0, 2.0]))
 print(kf.x)  # Updated state estimate
 ```
-
 More detailed examples and tutorials will be available in the documentation.
 
 ## 📬 Links
-
 - [Library Documentation](https://intsystems.github.io/Kalman-filter-and-his-friends/)
-- [Project Documentation](./docs/plan.md)
-- [Project Plan](...)
-- [Matvei Kreinin](https://github.com/kreininmv), [Maria Nikitina](https://github.com/NikitinaMaria), [Petr Babkin](https://github.com/petr-parker), [Anastasia Voznyuk](https://github.com/natriistorm)
----
+- [Blogpost](https://www.overleaf.com/read/qyvhbszcygjn#4ff3b8)
 
-Feel free to modify and expand this README as needed to fit your project's specific goals and implementation details!
-
+## Authors
+- [Matvei Kreinin](https://github.com/kreininmv)
+- [Maria Nikitina](https://github.com/NikitinaMaria)
+- [Petr Babkin](https://github.com/petr-parker)
+- [Anastasia Voznyuk](https://github.com/natriistorm)
