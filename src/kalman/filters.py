@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from typing import Optional
 
-from kalman.gaussian import GaussianState
+from src.kalman.gaussian import GaussianState
 
 
 class BaseFilter(nn.Module):
@@ -67,19 +67,18 @@ class BaseFilter(nn.Module):
         """
         pass
 
-
 class KalmanFilter(BaseFilter):
     """
     Kalman Filter class.
     Attributes:
         process_matrix (torch.Tensor): State transition matrix (F)
-            Shape: (*, dim_x, dim_x)
+            Shape: (*, state_dim, state_dim)
         measurement_matrix (torch.Tensor): Projection matrix (H)
-            Shape: (*, dim_z, dim_x)
+            Shape: (*, obs_dim, state_dim)
         process_noise (torch.Tensor): Uncertainty on the process (Q)
-            Shape: (*, dim_x, dim_x)
+            Shape: (*, state_dim, state_dim)
         measurement_noise (torch.Tensor): Uncertainty on the measure (R)
-            Shape: (*, dim_z, dim_z)
+            Shape: (*, obs_dim, obs_dim)
     """
     def __init__(self, 
                  process_matrix: torch.Tensor,
@@ -99,16 +98,19 @@ class KalmanFilter(BaseFilter):
         process_noise: Optional[torch.Tensor] = None,) -> GaussianState:
         """
         Predict step of the Kalman Filter.
+        Initially state_mean is (B, state_dim)
         """
         if process_matrix is None:
             process_matrix = self.process_matrix
         if process_noise is None:
             process_noise = self.process_noise
-        state_mean = process_matrix @ state.mean
-        
-        state_cov = process_matrix @ state.covariance @ process_matrix.transpose(-2, -1) + process_noise
-        return GaussianState(state_mean, state_cov)
 
+        state_mean = process_matrix @ state.mean.unsqueeze(-1)  # now it is (B, state_dim, 1)
+        state_mean = state_mean.squeeze(-1)
+
+        state_cov = (process_matrix @ state.covariance @ process_matrix.transpose(-2, -1)) + process_noise
+
+        return GaussianState(state_mean, state_cov)
 
     def project(
         self,
@@ -119,17 +121,12 @@ class KalmanFilter(BaseFilter):
         precompute_precision=True,
     ) -> GaussianState:
         """Project the current state (usually the prior) onto the measurement space
-
-        Use the measurement equation: z_k = H x_k + N(0, R).
-        Support batch computation: You can provide multiple measurements, projections models (H, R)
-        or/and multiple states. You just need to ensure that shapes are broadcastable.
-
         Args:
             state (GaussianState): Current state estimation (Usually the results of `predict`)
             measurement_matrix (Optional[torch.Tensor]): Overwrite the default projection matrix
-                Shape: (*, dim_z, dim_x)
+                Shape: (*, bs, state_dim)
             measurement_noise (Optional[torch.Tensor]): Overwrite the default projection noise)
-                Shape: (*, dim_z, dim_z)
+                Shape: (*, obs_dim, obs_dim)
             precompute_precision (bool): Precompute precision matrix (inverse covariance)
                 Done once to prevent more computations
                 Default: True
@@ -143,19 +140,18 @@ class KalmanFilter(BaseFilter):
         if measurement_noise is None:
             measurement_noise = self.measurement_noise
 
-        mean = measurement_matrix @ state.mean
-        covariance = measurement_matrix @ state.covariance @ measurement_matrix.mT + measurement_noise
+        mean = measurement_matrix @ state.mean.unsqueeze(-1)  # now it is (B, obs_dim, 1)
+        mean = mean.squeeze(-1)
 
-        return GaussianState(
-            mean,
-            covariance,
-            (
-                covariance.inverse().mT
-                if precompute_precision
-                else None
-            ),
+        cov = (measurement_matrix @ state.covariance @ measurement_matrix.transpose(-2, -1)) + measurement_noise
+
+        precision = (
+            torch.linalg.inv(cov).transpose(-2, -1)
+            if precompute_precision
+            else None
         )
-    
+
+        return GaussianState(mean, cov, precision)
 
     def update(self,
         state: GaussianState,
@@ -167,27 +163,29 @@ class KalmanFilter(BaseFilter):
         """
         Update step of the Kalman Filter.
         """
+        
         if measurement_matrix is None:
             measurement_matrix = self.measurement_matrix
         if measurement_noise is None:
             measurement_noise = self.measurement_noise
-        if measurement_matrix is None:
-            measurement_matrix = self.measurement_matrix
-        if measurement_noise is None:
-            measurement_noise = self.measurement_noise
+
         if projection is None:
             projection = self.project(state, measurement_matrix=measurement_matrix, measurement_noise=measurement_noise)
 
-        residual = measure - projection.mean
+        residual = measure - projection.mean  # now it is (B, obs_dim)
 
-        kalman_gain = state.covariance @ measurement_matrix.mT @ projection.precision
+        kalman_gain = (
+            state.covariance @ measurement_matrix.transpose(-2, -1) @ projection.precision
+        )  # now it is (B, state_dim, obs_dim)
 
-        mean = state.mean + kalman_gain @ residual
+        updated_mean = state.mean + (kalman_gain @ residual.unsqueeze(-1)).squeeze(-1)  # now it is (B, state_dim)
 
-        covariance = state.covariance - kalman_gain @ measurement_matrix @ state.covariance
+        updated_cov = (
+            state.covariance
+            - kalman_gain @ measurement_matrix @ state.covariance
+        )  # now it is (B, state_dim, state_dim)
 
-        return GaussianState(mean, covariance)
-
+        return GaussianState(updated_mean, updated_cov)
 
 class ExtendedKalmanFilter(BaseFilter):
     """
