@@ -1,5 +1,4 @@
-Despite their foundational role in probabilistic state-space modelling, Kalman filters [Kalman1960]_ remain surprisingly underrepresented in the deep learning community. Our new framework **Kalman filter and his friends** aims to change that: https://github.com/intsystems/Kalman-filter-and-his-friends/tree/main
-
+Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework **Kalman filter and his friends** aims to change that.
 Why Should DL Researchers Care about Kalman Filters?
 -----------------------------------------------------
 
@@ -127,7 +126,7 @@ Unscented Kalman Filter (UKF)
    :align: center
    :alt: Unscented Transform example
 
-The Unscented Kalman Filter [Julier2004]_ avoids derivatives and instead uses the **unscented transform**:
+The Unscented Kalman Filter avoids derivatives and instead uses the **unscented transform**:
 
 1. Select :math:`2N` sigma points from the input distribution.
 2. Propagate them through the non-linear function:
@@ -181,9 +180,3 @@ After installing the package, you can quickly set up and run a Kalman filter wit
         kf.update(np.array([[z]]))
         print("Current state estimate:", kf.x.flatten()[0])
 
-
-----
-
-.. [Kalman1960] R. E. Kalman, "A New Approach to Linear Filtering and Prediction Problems", 1960.
-.. [Julier2004] S. J. Julier and J. K. Uhlmann, "Unscented Filtering and Nonlinear Estimation", 2004.
-.. [Becker2023-ml] Becker et al., 2023.
