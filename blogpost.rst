@@ -81,7 +81,7 @@ Given the previous state estimate :math:`\hat{x}_{t-1|t-1}`, we predict the next
 
      P_{t|t} = (I - K_t H) P_{t|t-1}
 
-.. image:: images/scheme.png
+.. image:: ./images/scheme.png
    :width: 80%
    :align: center
    :alt: Scheme of calculating Kalman filters.
@@ -108,7 +108,7 @@ You might have noticed that everything above is just a fancy *linear* model. To 
 Extended Kalman Filter (EKF)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: images/ekf.png
+.. image:: ./images/ekf.png
    :width: 80%
    :align: center
    :alt: Analytical Linearization for EKF
@@ -122,7 +122,7 @@ EKF uses first-order Taylor approximation (linearization). The only change is th
 Unscented Kalman Filter (UKF)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: images/ukf.png
+.. image:: ./images/ukf.png
    :width: 80%
    :align: center
    :alt: Unscented Transform example
@@ -158,6 +158,29 @@ We provide a clean, minimalistic, and extensible implementation of different Kal
 - Variational Kalman Filters – Leveraging modern probabilistic techniques for scalable inference.
 
 After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.
+
+.. code-block:: python
+    import numpy as np
+    from kalman.filters import KalmanFilter
+
+    # Example: 1D constant position model
+    A = np.array([[1]])      # State transition matrix (position stays the same)
+    H = np.array([[1]])      # Observation matrix (we observe the position directly)
+    Q = np.array([[0.01]])   # Process noise covariance
+    R = np.array([[1]])      # Observation noise covariance
+    x0 = np.array([[0]])     # Initial state estimate 
+    P0 = np.array([[1]])     # Initial covariance estimate
+
+    kf = KalmanFilter(A, H, Q, R, x0, P0)
+
+    # Simulated noisy measurements
+    measurements = [1.2, 0.9, 1.0, 1.1, 0.95]
+
+    for z in measurements:
+        kf.predict()
+        kf.update(np.array([[z]]))
+        print("Current state estimate:", kf.x.flatten()[0])
+
 
 ----
 
