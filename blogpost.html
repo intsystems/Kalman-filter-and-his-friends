@@ -218,6 +218,28 @@
 <li><p>Variational Kalman Filters – Leveraging modern probabilistic techniques for scalable inference.</p></li>
 </ul>
 <p>After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">KalmanFilter</span>
+
+<span class="c1"># Example: 1D constant position model</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>      <span class="c1"># State transition matrix (position stays the same)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>      <span class="c1"># Observation matrix (we observe the position directly)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.01</span><span class="p">]])</span>   <span class="c1"># Process noise covariance</span>
+<span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>      <span class="c1"># Observation noise covariance</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>     <span class="c1"># Initial state estimate</span>
+<span class="n">P0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>     <span class="c1"># Initial covariance estimate</span>
+
+<span class="n">kf</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span>
+
+<span class="c1"># Simulated noisy measurements</span>
+<span class="n">measurements</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
+    <span class="n">kf</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+    <span class="n">kf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">z</span><span class="p">]]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current state estimate:&quot;</span><span class="p">,</span> <span class="n">kf</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
 </section>
 
 
