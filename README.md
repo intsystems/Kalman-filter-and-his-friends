@@ -74,9 +74,9 @@ You can install the required packages using pip:
 
 ## 👨‍💻 Usage
 
-Basic usage examples for different filters will be can be found in folder `notebooks`'
+Basic usage examples for different filters will be can be found in folder `notebooks`
 
-## Testing
+## ✅ Testing
 
 To run test, after intalling the pacakge, the following comman must be executed from the project root.
 ```bash
