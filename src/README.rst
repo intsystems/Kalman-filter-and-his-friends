@@ -49,6 +49,7 @@ Basic Usage
 You can use other filters in a similar way:
 
 .. code-block:: python
+
 	from kalman.extended import ExtendedKalmanFilter
 	from kalman.unscented import UnscentedKalmanFilter
 	from kalman.vkf import VariationalKalmanFilter
@@ -58,4 +59,3 @@ You can use other filters in a similar way:
 	ukf = UnscentedKalmanFilter(...)
 	vkf = VariationalKalmanFilter(...)
 	dkf = DeepKalmanFilter(...)
-
