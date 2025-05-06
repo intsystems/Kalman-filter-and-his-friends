@@ -1,4 +1,5 @@
-from typing import Tuple
+from typing import Tuple, Optional
+from overrides import override
 
 import torch
 from torch import nn
@@ -171,9 +172,10 @@ class KalmanFilter(BaseFilter):
 
         return GaussianState(mean, cov, precision)
 
+    @override
     def update(self,
         state: GaussianState,
-        measure: torch.Tensor,
+        measurement: torch.Tensor,
         *,
         projection: Optional[GaussianState] = None,
         measurement_matrix: Optional[torch.Tensor] = None,
@@ -190,7 +192,7 @@ class KalmanFilter(BaseFilter):
         if projection is None:
             projection = self.project(state, measurement_matrix=measurement_matrix, measurement_noise=measurement_noise)
 
-        residual = measure - projection.mean  # now it is (B, obs_dim)
+        residual = measurement - projection.mean  # now it is (B, obs_dim)
 
         kalman_gain = (
             state.covariance @ measurement_matrix.transpose(-2, -1) @ projection.precision
@@ -204,18 +206,16 @@ class KalmanFilter(BaseFilter):
         )  # now it is (B, state_dim, state_dim)
 
         return GaussianState(updated_mean, updated_cov)
-
-class ExtendedKalmanFilter(BaseFilter):
-    """
-    Extended Kalman Filter class.
-    """
-    def __init__(self, state_dim: int, obs_dim: int):
-        super().__init__(state_dim, obs_dim)
-
-
-class VariationalKalmanFilter(BaseFilter):
-    """
-    Variational Kalman Filter class.
-    """
-    def __init__(self, state_dim: int, obs_dim: int):
-        super().__init__(state_dim, obs_dim)
+    
+    def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Run the Kalman Filter over a sequence of observations.
+        """
+        means = []
+        covs = []
+        state = self.predict(self.initial_state)
+        for obs in observations:
+            state = self.update(state, obs)
+            means.append(state.mean)
+            covs.append(state.covariance)   
+        return GaussianState(torch.stack(means), torch.stack(covs))
