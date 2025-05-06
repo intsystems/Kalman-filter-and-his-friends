@@ -197,17 +197,20 @@ class UnscentedKalmanFilter(BaseFilter):
         -------
         all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory
         """
-        T, B, _ = observations.shape        
-        means = self._init_mean.expand(B, -1).to(observations.device)
-        covs = self._init_cov.expand(B, -1, -1).to(observations.device)
+        T, B = observations.shape[:2]
+        self._init_mean = self._init_mean.to(observations.device)
+        self._init_cov = self._init_cov.to(observations.device)
 
-        mean_t = torch.zeros(B, self.state_dim, device=observations.device, dtype=observations.dtype)
-        cov_t = torch.eye(self.state_dim, device=observations.device, dtype=observations.dtype).expand(B, -1, -1)
+        means = []
+        covs = []
 
         for t in range(T):
-            mean_t, cov_t = self.update(mean_t, cov_t, observations[t])
-            means[t] = mean_t
-            covs[t] = cov_t
-            mean_t, cov_t = self.predict(mean_t, cov_t)
+            if t > 0:
+                self._init_mean, self._init_cov = self.predict_(self._init_mean, self._init_cov)
+            self._init_mean, self._init_cov = self.update_(self._init_mean, self._init_cov, observations[t])
+            means.append(self._init_mean)
+            covs.append(self._init_cov)
 
-        return GaussianState(means, covs)
+        all_means = torch.stack(means, dim=0)  # (T, B, state_dim)
+        all_covs = torch.stack(covs, dim=0)    # (T, B, state_dim, state_dim)
+        return GaussianState(all_means, all_covs)
