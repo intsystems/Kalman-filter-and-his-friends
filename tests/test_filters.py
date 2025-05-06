@@ -1,7 +1,7 @@
 import torch
 import pytest
-from src.kalman.filters import KalmanFilter
-from src.kalman.gaussian import GaussianState
+from kalman.filters import KalmanFilter
+from kalman.gaussian import GaussianState
 
 @pytest.fixture
 def dummy_kf():

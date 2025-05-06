@@ -1,6 +1,6 @@
 import pytest
 import torch
-from src.kalman.gaussian import GaussianState
+from kalman.gaussian import GaussianState
 
 @pytest.fixture
 def simple_gaussian():
