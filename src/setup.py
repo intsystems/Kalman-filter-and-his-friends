@@ -2,7 +2,7 @@ import io
 import re
 from setuptools import setup, find_packages
 
-from src.kalman import __version__
+from kalman import __version__
 
 def read(file_path):
     with io.open(file_path, 'r', encoding='utf-8') as f:
@@ -32,3 +32,4 @@ setup(
     packages=find_packages(),
     install_requires=requirements,
 )
+
