@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Why Should DL Researchers Care about Kalman Filters? &mdash; Kalman filter and his friends  documentation</title>
+  <title>Theoretical Background &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
@@ -56,8 +56,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Why Should DL Researchers Care about Kalman Filters?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#theoretical-background">Theoretical Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Theoretical Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#algorithm">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#kalman-gain">Kalman Gain</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#non-linear-kalman-filters">Non-Linear Kalman Filters</a><ul>
@@ -92,7 +91,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Why Should DL Researchers Care about Kalman Filters?</li>
+      <li class="breadcrumb-item active">Theoretical Background</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/blogpost.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -102,9 +101,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>Despite their foundational role in probabilistic state-space modelling, Kalman filters <a class="reference internal" href="#kalman1960" id="id1"><span>[Kalman1960]</span></a> remain surprisingly underrepresented in the deep learning community. Our new framework <strong>Kalman filter and his friends</strong> aims to change that: <a class="reference external" href="https://github.com/intsystems/Kalman-filter-and-his-friends/tree/main">https://github.com/intsystems/Kalman-filter-and-his-friends/tree/main</a></p>
-<section id="why-should-dl-researchers-care-about-kalman-filters">
-<h1>Why Should DL Researchers Care about Kalman Filters?<a class="headerlink" href="#why-should-dl-researchers-care-about-kalman-filters" title="Link to this heading"></a></h1>
+  <p>Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework <strong>Kalman filter and his friends</strong> aims to change that.
+Why Should DL Researchers Care about Kalman Filters?
+—————————————————–</p>
 <p>Kalman filters serve as the backbone for many advanced models, including:</p>
 <ul class="simple">
 <li><p>Gaussian Processes, used for regression and time-series analysis.</p></li>
@@ -118,7 +117,6 @@
 <li><p>Better uncertainty quantification – Unlike many DL models, Kalman filters explicitly model uncertainty.</p></li>
 <li><p>Efficiency &amp; interpretability – Compared to deep neural networks, Kalman filters can be computationally efficient and easier to analyze.</p></li>
 </ul>
-</section>
 <section id="theoretical-background">
 <h1>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Link to this heading"></a></h1>
 <p>We will be working with a discrete-time linear dynamic system. It consists of two parts - a state equation and an observation equation. We have state variable <span class="math notranslate nohighlight">\(x_t\)</span> and our observed variable <span class="math notranslate nohighlight">\(y_t\)</span>. We try to predict <span class="math notranslate nohighlight">\(y_t\)</span> using <span class="math notranslate nohighlight">\(x_t\)</span>. We assume there is a linear relationship between these two variables and that there is Gaussian noise in “measurements” of both of these variables:</p>
@@ -191,7 +189,7 @@
 <h2>Unscented Kalman Filter (UKF)<a class="headerlink" href="#unscented-kalman-filter-ukf" title="Link to this heading"></a></h2>
 <a class="reference internal image-reference" href="images/ukf.png"><img alt="Unscented Transform example" class="align-center" src="images/ukf.png" style="width: 80%;" />
 </a>
-<p>The Unscented Kalman Filter <a class="reference internal" href="#julier2004" id="id2"><span>[Julier2004]</span></a> avoids derivatives and instead uses the <strong>unscented transform</strong>:</p>
+<p>The Unscented Kalman Filter avoids derivatives and instead uses the <strong>unscented transform</strong>:</p>
 <ol class="arabic">
 <li><p>Select <span class="math notranslate nohighlight">\(2N\)</span> sigma points from the input distribution.</p></li>
 <li><p>Propagate them through the non-linear function:</p>
@@ -218,31 +216,6 @@
 <li><p>Variational Kalman Filters – Leveraging modern probabilistic techniques for scalable inference.</p></li>
 </ul>
 <p>After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.</p>
-<hr class="docutils" />
-<div role="list" class="citation-list">
-<div class="citation" id="kalman1960" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Kalman1960</a><span class="fn-bracket">]</span></span>
-<ol class="upperalpha simple" start="18">
-<li><ol class="upperalpha simple" start="5">
-<li><p>Kalman, “A New Approach to Linear Filtering and Prediction Problems”, 1960.</p></li>
-</ol>
-</li>
-</ol>
-</div>
-<div class="citation" id="julier2004" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Julier2004</a><span class="fn-bracket">]</span></span>
-<ol class="upperalpha simple" start="19">
-<li><ol class="upperalpha simple" start="10">
-<li><p>Julier and J. K. Uhlmann, “Unscented Filtering and Nonlinear Estimation”, 2004.</p></li>
-</ol>
-</li>
-</ol>
-</div>
-<div class="citation" id="becker2023-ml" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Becker2023-ml<span class="fn-bracket">]</span></span>
-<p>Becker et al., 2023.</p>
-</div>
-</div>
 </section>
 
 
