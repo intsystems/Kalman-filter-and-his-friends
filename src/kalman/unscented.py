@@ -186,15 +186,16 @@ class UnscentedKalmanFilter(BaseFilter):
     # ================================================================== #
     def forward(self, observations: torch.Tensor):
         """
-        Filter an observation sequence of shape ``(T, B, obs_dim, 1)``.
+        Run the UKF over a sequence of observations.
+
+        Parameters
+        ----------
+        observations : torch.Tensor
+            Shape (T, B, obs_dim)
 
         Returns
         -------
-        traj_state : GaussianState
-            Posterior over the full trajectory (means & covariances stacked
-            along time).
-        (means, covs) : Tuple[torch.Tensor, torch.Tensor]
-            Raw tensors with shapes ``(T, B, n, 1)`` and ``(T, B, n, n)``.
+        all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory
         """
         T, B, _ = observations.shape        
         means = self._init_mean.expand(B, -1).to(observations.device)
@@ -209,4 +210,4 @@ class UnscentedKalmanFilter(BaseFilter):
             covs[t] = cov_t
             mean_t, cov_t = self.predict(mean_t, cov_t)
 
-        return GaussianState(means, covs), means, covs
+        return GaussianState(means, covs)

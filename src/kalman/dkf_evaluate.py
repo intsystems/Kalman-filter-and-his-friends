@@ -108,7 +108,7 @@ def sampleGaussian(dkf,mu,logcov):
 
 def sample(dkf, nsamples=100, T=10, additional = {}):
     """
-                                  Sample from Generative Model
+    Sample from Generative Model
     """
     assert T>1, 'Sample atleast 2 timesteps'
     #Initial sample
