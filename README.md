@@ -69,7 +69,7 @@ You can install the required packages using pip:
     ```
 2. Install the dependencies:
     ```bash
-    python -m pip install -e .
+    python3 -m pip install /tmp/Kalman-filter-and-his-friends/src/
     ```
 
 ## 👨‍💻 Usage
