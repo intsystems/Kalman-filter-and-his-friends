@@ -1,3 +1,8 @@
+.. image:: images/kalman.png
+   :width: 80%
+   :align: center
+   :alt: Scheme of calculating Kalman filters.
+
 
 Kalman Filter and Extensions
 -------------------------
