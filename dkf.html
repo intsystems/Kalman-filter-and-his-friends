@@ -72,18 +72,7 @@
 <li class="toctree-l1"><a class="reference internal" href="extended.html">Extended Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unscented.html">Unscented Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Kalman Filter</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Deep Kalman Filter</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter.forward"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter.forward()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter.infer"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter.infer()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter.loss"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter.loss()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter.predict"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter.predict()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter.train_step"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter.train_step()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#kalman.dkf.DeepKalmanFilter.update"><code class="docutils literal notranslate"><span class="pre">DeepKalmanFilter.update()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deep Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
 </ul>
 
@@ -111,86 +100,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-kalman.dkf">
-<span id="deep-kalman-filter"></span><h1>Deep Kalman Filter<a class="headerlink" href="#module-kalman.dkf" title="Link to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.dkf.</span></span><span class="sig-name descname"><span class="pre">DeepKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter" title="Link to this definition"></a></dt>
-<dd><p>Deep Kalman Filter implementation that combines neural networks with Kalman filtering.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter.forward" title="Link to this definition"></a></dt>
-<dd><p>Исправленный forward pass для обработки последовательностей</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter.infer">
-<span class="sig-name descname"><span class="pre">infer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter.infer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter.infer" title="Link to this definition"></a></dt>
-<dd><p>Infer latent states
-Args:</p>
-<blockquote>
-<div><p>observations: Input sequence</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Tuple of (z, mu, logcov)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter.loss">
-<span class="sig-name descname"><span class="pre">loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter.loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter.loss" title="Link to this definition"></a></dt>
-<dd><p>Compute loss (negative ELBO)
-Args:</p>
-<blockquote>
-<div><p>observations: Input sequence
-mask: Observation mask
-eps: Random noise for reparameterization</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Tuple of (total_loss, nll, kl)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter.predict" title="Link to this definition"></a></dt>
-<dd><p>Predict step of the Deep Kalman Filter.
-Args:</p>
-<blockquote>
-<div><p>state: Current state distribution
-measurement: Optional measurement for conditioning</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Predicted state distribution</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter.train_step">
-<span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter.train_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter.train_step" title="Link to this definition"></a></dt>
-<dd><p>Single training step
-Args:</p>
-<blockquote>
-<div><p>observations: Input sequence
-mask: Observation mask</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Tuple of (loss, nll, kl) values</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kalman.dkf.DeepKalmanFilter.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/dkf.html#DeepKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.dkf.DeepKalmanFilter.update" title="Link to this definition"></a></dt>
-<dd><p>Исправленный метод update с правильной обработкой измерений</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="deep-kalman-filter">
+<h1>Deep Kalman Filter<a class="headerlink" href="#deep-kalman-filter" title="Link to this heading"></a></h1>
 </section>
 
 
