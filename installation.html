@@ -56,10 +56,14 @@
 <p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-by-using-pypi">Installing by using PyPi</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#uninstall">Uninstall</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#standard-kalman-filter">1. Standard Kalman Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extended-unscented-variational-deep-kalman-filters">2. Extended/Unscented/Variational/Deep Kalman Filters</a></li>
 </ul>
 </li>
 </ul>
@@ -98,14 +102,6 @@
              
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Python 3.*</p></li>
-<li><p>pip 20.0.2</p></li>
-<li><p>torch 2.7.0</p></li>
-</ul>
-</section>
 <section id="installing-by-using-pypi">
 <h2>Installing by using PyPi<a class="headerlink" href="#installing-by-using-pypi" title="Link to this heading"></a></h2>
 <section id="install">
@@ -120,6 +116,34 @@ python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>uninstall<span class="w"> </span>kalman
 </pre></div>
 </div>
+</section>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="standard-kalman-filter">
+<h3>1. Standard Kalman Filter<a class="headerlink" href="#standard-kalman-filter" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">kalman.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">KalmanFilter</span>
+
+<span class="c1"># Define your system matrices</span>
+<span class="n">A</span> <span class="o">=</span> <span class="o">...</span>  <span class="c1"># State transition matrix</span>
+<span class="n">H</span> <span class="o">=</span> <span class="o">...</span>  <span class="c1"># Observation matrix</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="o">...</span>  <span class="c1"># Process noise covariance</span>
+<span class="n">R</span> <span class="o">=</span> <span class="o">...</span>  <span class="c1"># Observation noise covariance</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># Initial state</span>
+<span class="n">P0</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># Initial covariance</span>
+
+<span class="n">kf</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
+    <span class="n">kf</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
+    <span class="n">kf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current state estimate:&quot;</span><span class="p">,</span> <span class="n">kf</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="extended-unscented-variational-deep-kalman-filters">
+<h3>2. Extended/Unscented/Variational/Deep Kalman Filters<a class="headerlink" href="#extended-unscented-variational-deep-kalman-filters" title="Link to this heading"></a></h3>
+<p>You can use other filters in a similar way:</p>
 </section>
 </section>
 </section>
