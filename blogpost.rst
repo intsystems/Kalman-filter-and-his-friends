@@ -160,6 +160,7 @@ We provide a clean, minimalistic, and extensible implementation of different Kal
 After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.
 
 .. code-block:: python
+    
     import numpy as np
     from kalman.filters import KalmanFilter
 
