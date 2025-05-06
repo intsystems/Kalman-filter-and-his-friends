@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Should DL Researchers Care about Kalman Filters? &mdash; Kalman filter and his friends  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Kalman Filter and Extensions" href="info.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Kalman filter and his friends
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="info.html">Kalman Filter and Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html#description">💡 Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html#related-work">🔗 Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html#tech-stack">📚 Tech Stack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html#usage">👨‍💻 Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="info.html#links">📬 Links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Why Should DL Researchers Care about Kalman Filters?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#theoretical-background">Theoretical Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#algorithm">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#kalman-gain">Kalman Gain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#non-linear-kalman-filters">Non-Linear Kalman Filters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extended-kalman-filter-ekf">Extended Kalman Filter (EKF)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unscented-kalman-filter-ukf">Unscented Kalman Filter (UKF)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#our-framework">Our Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unscented.html">Unscented Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Kalman filter and his friends</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Why Should DL Researchers Care about Kalman Filters?</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/blogpost.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Despite their foundational role in probabilistic state-space modelling, Kalman filters <a class="reference internal" href="#kalman1960" id="id1"><span>[Kalman1960]</span></a> remain surprisingly underrepresented in the deep learning community. Our new framework <strong>Kalman filter and his friends</strong> aims to change that: <a class="reference external" href="https://github.com/intsystems/Kalman-filter-and-his-friends/tree/main">https://github.com/intsystems/Kalman-filter-and-his-friends/tree/main</a></p>
+<section id="why-should-dl-researchers-care-about-kalman-filters">
+<h1>Why Should DL Researchers Care about Kalman Filters?<a class="headerlink" href="#why-should-dl-researchers-care-about-kalman-filters" title="Link to this heading"></a></h1>
+<p>Kalman filters serve as the backbone for many advanced models, including:</p>
+<ul class="simple">
+<li><p>Gaussian Processes, used for regression and time-series analysis.</p></li>
+<li><p>State-Space Models (SSMs) like S4/S6, crucial for sequence modelling in modern deep learning.</p></li>
+<li><p>Hidden Markov Models (HMMs), widely applied in speech recognition and bioinformatics.</p></li>
+<li><p>Recurrent Neural Networks (RNNs), which share conceptual similarities in sequential data processing.</p></li>
+</ul>
+<p>Kalman filters provide a principled way to estimate hidden states from noisy observations, something neural networks often do implicitly but with less interpretability. Kalman filter is extremely powerful when the noise in the data is roughly Gaussian, and a lot of tasks in DL fit into this description. By integrating these filters into DL pipelines, we gain:</p>
+<ul class="simple">
+<li><p>Stronger theoretical grounding – Kalman-based approaches have well-defined probabilistic properties.</p></li>
+<li><p>Better uncertainty quantification – Unlike many DL models, Kalman filters explicitly model uncertainty.</p></li>
+<li><p>Efficiency &amp; interpretability – Compared to deep neural networks, Kalman filters can be computationally efficient and easier to analyze.</p></li>
+</ul>
+</section>
+<section id="theoretical-background">
+<h1>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Link to this heading"></a></h1>
+<p>We will be working with a discrete-time linear dynamic system. It consists of two parts - a state equation and an observation equation. We have state variable <span class="math notranslate nohighlight">\(x_t\)</span> and our observed variable <span class="math notranslate nohighlight">\(y_t\)</span>. We try to predict <span class="math notranslate nohighlight">\(y_t\)</span> using <span class="math notranslate nohighlight">\(x_t\)</span>. We assume there is a linear relationship between these two variables and that there is Gaussian noise in “measurements” of both of these variables:</p>
+<div class="math notranslate nohighlight">
+\[x_{t+1} = A_t x_t + w_t\]</div>
+<div class="math notranslate nohighlight">
+\[y_t = H_t x_t + v_t\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x_t\)</span> is the hidden state at time <span class="math notranslate nohighlight">\(t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(A_t\)</span> is the transition matrix</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_t\)</span> is the observation</p></li>
+<li><p><span class="math notranslate nohighlight">\(H_t\)</span> is the observation matrix</p></li>
+</ul>
+<p>The stochastic nature of the process is expressed with:</p>
+<div class="math notranslate nohighlight">
+\[w_t \sim \mathcal{N}(0, Q), \quad v_t \sim \mathcal{N}(0, R)\]</div>
+<p>The Kalman filter is an online algorithm that estimates the hidden state of a dynamic system based on noisy observations. The model updates its estimation of the weights sequentially as new data comes in and provides an optimal solution (in a least-squares sense).</p>
+</section>
+<section id="algorithm">
+<h1>Algorithm<a class="headerlink" href="#algorithm" title="Link to this heading"></a></h1>
+<p>At its core, the Kalman filter operates on a predict-update cycle. This process is Bayesian, meaning the filter maintains a probabilistic belief over the system’s state, updating it as new information comes in.</p>
+<p><strong>1. Predict (estimation) step</strong></p>
+<p>Given the previous state estimate <span class="math notranslate nohighlight">\(\hat{x}_{t-1|t-1}\)</span>, we predict the next state:</p>
+<div class="math notranslate nohighlight">
+\[\hat{x}_{t|t-1} = A \hat{x}_{t-1|t-1}\]</div>
+<div class="math notranslate nohighlight">
+\[P_{t|t-1} = A P_{t-1|t-1} A^T + Q\]</div>
+<p><strong>2. Update (correction) step</strong></p>
+<ul>
+<li><p>Compute Kalman Gain:</p>
+<div class="math notranslate nohighlight">
+\[K_t = P_{t|t-1} H^T (H P_{t|t-1} H^T + R)^{-1}\]</div>
+</li>
+<li><p>Update state estimate:</p>
+<div class="math notranslate nohighlight">
+\[\hat{x}_{t|t} = \hat{x}_{t|t-1} + K_t (y_t - H \hat{x}_{t|t-1})\]</div>
+</li>
+<li><p>Update uncertainty:</p>
+<div class="math notranslate nohighlight">
+\[P_{t|t} = (I - K_t H) P_{t|t-1}\]</div>
+</li>
+</ul>
+<a class="reference internal image-reference" href="images/scheme.png"><img alt="Scheme of calculating Kalman filters." class="align-center" src="images/scheme.png" style="width: 80%;" />
+</a>
+</section>
+<section id="kalman-gain">
+<h1>Kalman Gain<a class="headerlink" href="#kalman-gain" title="Link to this heading"></a></h1>
+<p>The Kalman Gain, denoted as <span class="math notranslate nohighlight">\(K_t\)</span>, serves as an adaptive weighting mechanism in the estimation step. It assigns more weight to the more accurate estimate — typically, the one with a smaller Mean Squared Error (MSE).</p>
+<div class="math notranslate nohighlight">
+\[K = \frac{\sigma^2_{\text{EST}}}{\sigma^2_{\text{MEA}} + \sigma^2_{\text{EST}}}\]</div>
+<p>As a result:</p>
+<ul class="simple">
+<li><p>A larger <span class="math notranslate nohighlight">\(K\)</span> suggests greater trust in the new measurements.</p></li>
+<li><p>A smaller <span class="math notranslate nohighlight">\(K\)</span> implies greater confidence in the model prediction.</p></li>
+</ul>
+</section>
+<section id="non-linear-kalman-filters">
+<h1>Non-Linear Kalman Filters<a class="headerlink" href="#non-linear-kalman-filters" title="Link to this heading"></a></h1>
+<p>You might have noticed that everything above is just a fancy <em>linear</em> model. To deal with non-linearity, there exist several modifications of Kalman filters.</p>
+<section id="extended-kalman-filter-ekf">
+<h2>Extended Kalman Filter (EKF)<a class="headerlink" href="#extended-kalman-filter-ekf" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="images/ekf.png"><img alt="Analytical Linearization for EKF" class="align-center" src="images/ekf.png" style="width: 80%;" />
+</a>
+<p>EKF uses first-order Taylor approximation (linearization). The only change is that instead of matrices <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(H\)</span>, we use their Jacobians.</p>
+<div class="math notranslate nohighlight">
+\[P_{t|t-1} = \frac{\partial a}{\partial x} P_{t-1|t-1} \left( \frac{\partial a}{\partial x} \right)^T + Q\]</div>
+</section>
+<section id="unscented-kalman-filter-ukf">
+<h2>Unscented Kalman Filter (UKF)<a class="headerlink" href="#unscented-kalman-filter-ukf" title="Link to this heading"></a></h2>
+<a class="reference internal image-reference" href="images/ukf.png"><img alt="Unscented Transform example" class="align-center" src="images/ukf.png" style="width: 80%;" />
+</a>
+<p>The Unscented Kalman Filter <a class="reference internal" href="#julier2004" id="id2"><span>[Julier2004]</span></a> avoids derivatives and instead uses the <strong>unscented transform</strong>:</p>
+<ol class="arabic">
+<li><p>Select <span class="math notranslate nohighlight">\(2N\)</span> sigma points from the input distribution.</p></li>
+<li><p>Propagate them through the non-linear function:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{X}_{t+1, t} = \left[ \mathcal{X}_{t+1, t}^{(0)}, \mathcal{X}_{t+1, t}^{(1)}, \ldots, \mathcal{X}_{t+1, t}^{(2N)} \right]\]</div>
+</li>
+<li><p>Compute sigma point weights <span class="math notranslate nohighlight">\(w_i\)</span>.</p></li>
+<li><p>Use them to estimate mean and covariance:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\boldsymbol{x}}_{t + 1, t} = \sum_{i=0}^{2N} w_i \mathcal{X}_{t+1, t}^{(i)}\]</div>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{P}_{t + 1, t} = \sum_{i=0}^{2N} w_i \left( \mathcal{X}_{t+1, t}^{(i)} - \hat{\boldsymbol{x}}_{t + 1, t} \right)^2\]</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="our-framework">
+<h1>Our Framework<a class="headerlink" href="#our-framework" title="Link to this heading"></a></h1>
+<p>We provide a clean, minimalistic, and extensible implementation of different Kalman filter variants:</p>
+<ul class="simple">
+<li><p>Standard Kalman Filter – The foundational model for linear state estimation.</p></li>
+<li><p>Extended Kalman Filter (EKF) – Handling nonlinear dynamics through local linearization.</p></li>
+<li><p>Unscented Kalman Filter (UKF) – A more accurate approach using sigma-point sampling.</p></li>
+<li><p>Variational Kalman Filters – Leveraging modern probabilistic techniques for scalable inference.</p></li>
+</ul>
+<p>After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.</p>
+<hr class="docutils" />
+<div role="list" class="citation-list">
+<div class="citation" id="kalman1960" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Kalman1960</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="18">
+<li><ol class="upperalpha simple" start="5">
+<li><p>Kalman, “A New Approach to Linear Filtering and Prediction Problems”, 1960.</p></li>
+</ol>
+</li>
+</ol>
+</div>
+<div class="citation" id="julier2004" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Julier2004</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="19">
+<li><ol class="upperalpha simple" start="10">
+<li><p>Julier and J. K. Uhlmann, “Unscented Filtering and Nonlinear Estimation”, 2004.</p></li>
+</ol>
+</li>
+</ol>
+</div>
+<div class="citation" id="becker2023-ml" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Becker2023-ml<span class="fn-bracket">]</span></span>
+<p>Becker et al., 2023.</p>
+</div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="info.html" class="btn btn-neutral float-left" title="Kalman Filter and Extensions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
