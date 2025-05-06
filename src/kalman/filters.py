@@ -1,10 +1,11 @@
-from typing import Tuple
+from typing import Tuple, Optional
+from overrides import override
 
 import torch
 from torch import nn
 from typing import Optional
 
-from src.kalman.gaussian import GaussianState
+from kalman.gaussian import GaussianState
 
 
 class BaseFilter(nn.Module):
@@ -18,54 +19,72 @@ class BaseFilter(nn.Module):
         self.obs_dim = obs_dim
         self.smooth = smooth
 
-    def predict(
+    def predict_(
         self, 
         state_mean: torch.Tensor, 
         state_cov: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Single-step predict.
+        Internal function for single-step predict.
         Returns:
             predicted_state_mean, predicted_state_cov
         """
         pass
 
-    def update(
+    def update_(
         self, 
         state_mean: torch.Tensor, 
         state_cov: torch.Tensor, 
         measurement: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        Single-step update.
+        Internal single-step update.
         Returns:
             updated_state_mean, updated_state_cov
         """
         pass
     
+    def predict(self, state: GaussianState) -> GaussianState:
+        """
+        Single-step predict.
+        Returns:
+            GaussianStateю
+        """
+        m, P = self.predict_(state.mean, state.covariance)
+        return GaussianState(m, P)
+    
+    def update(self, state: GaussianState, measurement: torch.Tensor) -> GaussianState:
+        """
+        Single-step update.
+        Returns:
+            GaussianStateю
+        """
+        m, P = self.update_(state.mean, state.covariance, measurement)
+        return GaussianState(m, P)
+
     def predict_update(
         self, 
-        state_mean: torch.Tensor,
-        state_cov: torch.Tensor,
-        measurement: torch.Tensor
+        state: GaussianState, 
+        measurement: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Single-step predict and update in one function.
         Returns: 
             updated_state_mean, updated_state_cov
         """
-        updated_state_mean, updated_state_cov = self.update(state_mean, state_cov, measurement)
-        predicted_state_mean, predicted_state_cov = self.predict(updated_state_mean, updated_state_cov)
-        return predicted_state_mean, predicted_state_cov
+        predicted_state = self.update(state)
+        updated_state = self.predict(predicted_state, measurement)
+        return updated_state
 
     def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Processes an entire sequence of observations in shape (T, B, obs_dim).
-        Returns all_states, pairs (all_means, all_covs) with shapes:
-            all_means: (T, B, state_dim)
-            all_covs:  (T, B, state_dim, state_dim)
+        Returns
+        -------
+        all_states, all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory
         """
         pass
+        
 
 class KalmanFilter(BaseFilter):
     """
@@ -153,9 +172,10 @@ class KalmanFilter(BaseFilter):
 
         return GaussianState(mean, cov, precision)
 
+    @override
     def update(self,
         state: GaussianState,
-        measure: torch.Tensor,
+        measurement: torch.Tensor,
         *,
         projection: Optional[GaussianState] = None,
         measurement_matrix: Optional[torch.Tensor] = None,
@@ -172,7 +192,7 @@ class KalmanFilter(BaseFilter):
         if projection is None:
             projection = self.project(state, measurement_matrix=measurement_matrix, measurement_noise=measurement_noise)
 
-        residual = measure - projection.mean  # now it is (B, obs_dim)
+        residual = measurement - projection.mean  # now it is (B, obs_dim)
 
         kalman_gain = (
             state.covariance @ measurement_matrix.transpose(-2, -1) @ projection.precision
@@ -186,18 +206,16 @@ class KalmanFilter(BaseFilter):
         )  # now it is (B, state_dim, state_dim)
 
         return GaussianState(updated_mean, updated_cov)
-
-class ExtendedKalmanFilter(BaseFilter):
-    """
-    Extended Kalman Filter class.
-    """
-    def __init__(self, state_dim: int, obs_dim: int):
-        super().__init__(state_dim, obs_dim)
-
-
-class VariationalKalmanFilter(BaseFilter):
-    """
-    Variational Kalman Filter class.
-    """
-    def __init__(self, state_dim: int, obs_dim: int):
-        super().__init__(state_dim, obs_dim)
+    
+    def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Run the Kalman Filter over a sequence of observations.
+        """
+        means = []
+        covs = []
+        state = self.predict(self.initial_state)
+        for obs in observations:
+            state = self.update(state, obs)
+            means.append(state.mean)
+            covs.append(state.covariance)   
+        return GaussianState(torch.stack(means), torch.stack(covs))

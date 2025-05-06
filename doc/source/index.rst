@@ -14,6 +14,12 @@ Welcome to Kalman filter and his friends!
 
 .. toctree::
    :maxdepth: 1
+   :caption: Theoretical Background:
+   
+   blogpost.rst
+
+.. toctree::
+   :maxdepth: 1
    :caption: Get Started:
    
    installation.rst

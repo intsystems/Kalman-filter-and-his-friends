@@ -174,15 +174,6 @@ class ExtendedKalmanFilter(BaseFilter):
         S = S + self.eps * torch.eye(self.obs_dim, device=S.device)
 
         # Kalman gain K_k = P Hᵀ S⁻¹
-        # 1) Direct solve:  (P Hᵀ) S⁻¹  ≡  solve(Sᵀ, (P Hᵀ)ᵀ)ᵀ
-        #PHt = state_cov @ H.transpose(-1, -2)
-        #K = torch.linalg.solve(S.transpose(-1, -2), PHt.transpose(-1, -2)).transpose(-1, -2)
-        ## 2) Cholesky + triangular solve (fast & stable for SPD S)
-        #L = torch.linalg.cholesky(S)
-        ## solve L Y = (P Hᵀ) then  Lᵀ Kᵀ = Y
-        #Y = torch.linalg.solve_triangular(L, PHt, upper=False)
-        #K = torch.linalg.solve_triangular(L.transpose(-1, -2), Y, upper=True)
-        # Kalman gain K_k = P Hᵀ S⁻¹
         K = state_cov @ H.transpose(-1, -2) @ torch.linalg.inv(S)
 
         # Updated mean x̂_{k|k}
@@ -227,18 +218,10 @@ class ExtendedKalmanFilter(BaseFilter):
         Convenience wrapper that performs a *time‑update* immediately
         followed by a *measurement‑update*.
 
-        Order: **predict → update**  
-        (the canonical order in most EKF texts).
-
         Parameters
         ----------
-        state_mean : torch.Tensor
-            Prior/posterior mean at step *k‑1*, shape (*, state_dim).
-        state_cov : torch.Tensor
-            Prior/posterior covariance at step *k‑1*, shape
-            (*, state_dim, state_dim).
+        state : torch.GaussianState
         measurement : torch.Tensor
-            Observation z_k, shape (*, obs_dim).
 
         Returns
         -------
@@ -296,4 +279,4 @@ class ExtendedKalmanFilter(BaseFilter):
         all_means = torch.stack(means, dim=0)  # (T, B, state_dim)
         all_covs = torch.stack(covs, dim=0)    # (T, B, state_dim, state_dim)
 
-        return GaussianState(all_means, all_covs), (all_means, all_covs)
+        return GaussianState(all_means, all_covs)

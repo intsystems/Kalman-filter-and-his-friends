@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">  
-    <img src="images/kalman.webp" width="500px" />
+    <img src="doc/source/images/kalman.webp" width="500px" />
 </div>
 
 <p align="center">
@@ -72,26 +72,16 @@ You can install the required packages using pip:
     python3 -m pip install /tmp/Kalman-filter-and-his-friends/src/
     ```
 
-Uninstall:
-
-```bash
-python3 -m pip uninstall kalman
-```
-
 ## 👨‍💻 Usage
 
-Basic usage examples for different filters will be provided. Below is an example of using a Kalman Filter in PyTorch:
+Basic usage examples for different filters will be can be found in folder `notebooks`
 
-```python
-import torch
-from kalman_filter import KalmanFilter
+## ✅ Testing
 
-kf = KalmanFilter(dim_x=4, dim_z=2)
-kf.predict()
-kf.update(torch.tensor([1.0, 2.0]))
-print(kf.x)  # Updated state estimate
+To run test, after intalling the pacakge, the following comman must be executed from the project root.
+```bash
+PYTHONPATH="${PYTHONPATH}:src" pytest tests/test_filters.py -v
 ```
-More detailed examples and tutorials will be available in the documentation.
 
 ## 📬 Links
 - [Library Documentation](https://intsystems.github.io/Kalman-filter-and-his-friends/)

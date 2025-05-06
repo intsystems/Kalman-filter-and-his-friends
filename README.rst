@@ -1,3 +1,6 @@
+.. image:: images/kalman.png
+   :width: 80%
+   :align: center
 
 Kalman Filter and Extensions
 -------------------------
