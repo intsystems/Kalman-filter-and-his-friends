@@ -1,4 +1,5 @@
 Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework **Kalman filter and his friends** aims to change that.
+
 Why Should DL Researchers Care about Kalman Filters?
 -----------------------------------------------------
 
