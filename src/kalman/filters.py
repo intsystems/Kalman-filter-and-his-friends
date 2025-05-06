@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from typing import Optional
 
-from src.kalman.gaussian import GaussianState
+from kalman.gaussian import GaussianState
 
 
 class BaseFilter(nn.Module):
