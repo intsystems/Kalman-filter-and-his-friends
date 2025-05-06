@@ -102,10 +102,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <p>Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework <strong>Kalman filter and his friends</strong> aims to change that.</p>
-<section id="why-should-dl-researchers-care-about-kalman-filters">
+  <section id="why-should-dl-researchers-care-about-kalman-filters">
 <h1>Why Should DL Researchers Care about Kalman Filters?<a class="headerlink" href="#why-should-dl-researchers-care-about-kalman-filters" title="Link to this heading"></a></h1>
-<p>Kalman filters serve as the backbone for many advanced models, including:</p>
+<p>Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework <strong>Kalman filter and his friends</strong> aims to change that.
+Kalman filters serve as the backbone for many advanced models, including:</p>
 <ul class="simple">
 <li><p>Gaussian Processes, used for regression and time-series analysis.</p></li>
 <li><p>State-Space Models (SSMs) like S4/S6, crucial for sequence modelling in modern deep learning.</p></li>
@@ -162,7 +162,7 @@
 \[P_{t|t} = (I - K_t H) P_{t|t-1}\]</div>
 </li>
 </ul>
-<a class="reference internal image-reference" href="images/scheme.png"><img alt="Scheme of calculating Kalman filters." class="align-center" src="images/scheme.png" style="width: 80%;" />
+<a class="reference internal image-reference" href="_images/scheme.png"><img alt="Scheme of calculating Kalman filters." class="align-center" src="_images/scheme.png" style="width: 80%;" />
 </a>
 </section>
 <section id="kalman-gain">
@@ -181,7 +181,7 @@
 <p>You might have noticed that everything above is just a fancy <em>linear</em> model. To deal with non-linearity, there exist several modifications of Kalman filters.</p>
 <section id="extended-kalman-filter-ekf">
 <h2>Extended Kalman Filter (EKF)<a class="headerlink" href="#extended-kalman-filter-ekf" title="Link to this heading"></a></h2>
-<a class="reference internal image-reference" href="images/ekf.png"><img alt="Analytical Linearization for EKF" class="align-center" src="images/ekf.png" style="width: 80%;" />
+<a class="reference internal image-reference" href="_images/ekf.png"><img alt="Analytical Linearization for EKF" class="align-center" src="_images/ekf.png" style="width: 80%;" />
 </a>
 <p>EKF uses first-order Taylor approximation (linearization). The only change is that instead of matrices <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(H\)</span>, we use their Jacobians.</p>
 <div class="math notranslate nohighlight">
@@ -189,7 +189,7 @@
 </section>
 <section id="unscented-kalman-filter-ukf">
 <h2>Unscented Kalman Filter (UKF)<a class="headerlink" href="#unscented-kalman-filter-ukf" title="Link to this heading"></a></h2>
-<a class="reference internal image-reference" href="images/ukf.png"><img alt="Unscented Transform example" class="align-center" src="images/ukf.png" style="width: 80%;" />
+<a class="reference internal image-reference" href="_images/ukf.png"><img alt="Unscented Transform example" class="align-center" src="_images/ukf.png" style="width: 80%;" />
 </a>
 <p>The Unscented Kalman Filter avoids derivatives and instead uses the <strong>unscented transform</strong>:</p>
 <ol class="arabic">
