@@ -1,8 +1,7 @@
-Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework **Kalman filter and his friends** aims to change that.
-
 Why Should DL Researchers Care about Kalman Filters?
------------------------------------------------------
+----------------------------------------------------
 
+Despite their foundational role in probabilistic state-space modelling, Kalman filters remain surprisingly underrepresented in the deep learning community. Our new framework **Kalman filter and his friends** aims to change that.
 Kalman filters serve as the backbone for many advanced models, including:
 
 - Gaussian Processes, used for regression and time-series analysis.
@@ -160,7 +159,7 @@ We provide a clean, minimalistic, and extensible implementation of different Kal
 After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.
 
 .. code-block:: python
-    
+
     import numpy as np
     from kalman.filters import KalmanFilter
 
