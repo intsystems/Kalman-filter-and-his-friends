@@ -80,7 +80,7 @@ Given the previous state estimate :math:`\hat{x}_{t-1|t-1}`, we predict the next
 
      P_{t|t} = (I - K_t H) P_{t|t-1}
 
-.. image:: ./images/scheme.png
+.. image:: images/scheme.png
    :width: 80%
    :align: center
    :alt: Scheme of calculating Kalman filters.
@@ -107,7 +107,7 @@ You might have noticed that everything above is just a fancy *linear* model. To 
 Extended Kalman Filter (EKF)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: ./images/ekf.png
+.. image:: images/ekf.png
    :width: 80%
    :align: center
    :alt: Analytical Linearization for EKF
@@ -121,7 +121,7 @@ EKF uses first-order Taylor approximation (linearization). The only change is th
 Unscented Kalman Filter (UKF)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: ./images/ukf.png
+.. image:: images/ukf.png
    :width: 80%
    :align: center
    :alt: Unscented Transform example

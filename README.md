@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">  
-    <img src="images/kalman.webp" width="500px" />
+    <img src="doc/images/kalman.webp" width="500px" />
 </div>
 
 <p align="center">
