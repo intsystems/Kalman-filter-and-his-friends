@@ -256,25 +256,22 @@ class ExtendedKalmanFilter(BaseFilter):
             Means shape (T, B, state_dim)
             Covs  shape (T, B, state_dim, state_dim)
         """
-        T, B, _ = observations.shape
+        T, B = observations.shape[:2]
         device = observations.device
 
-        m = self._init_mean.expand(B, -1).to(device)
-        P = self._init_cov.expand(B, -1, -1).to(device)
+        self._init_mean = self._init_mean.to(observations.device)
+        self._init_cov = self._init_cov.to(observations.device)
 
         means = []
         covs = []
 
         for t in range(T):
-            # 1) Predict from previous posterior
             if t > 0:
-                m, P = self.predict_(m, P)
+                self._init_mean, self._init_cov = self.predict_(self._init_mean, self._init_cov)
+            self._init_mean, self._init_cov = self.update_(self._init_mean, self._init_cov, observations[t])
 
-            # 2) Correct with z_t
-            m, P = self.update_(m, P, observations[t])
-
-            means.append(m)
-            covs.append(P)
+            means.append(self._init_mean)
+            covs.append(self._init_cov)
 
         all_means = torch.stack(means, dim=0)  # (T, B, state_dim)
         all_covs = torch.stack(covs, dim=0)    # (T, B, state_dim, state_dim)
