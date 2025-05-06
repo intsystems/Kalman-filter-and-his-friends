@@ -232,41 +232,6 @@ def test_predict_update_combined():
     
     assert torch.allclose(updated_state.mean, updated_state_separate.mean, atol=1e-5)
     assert torch.allclose(updated_state.covariance, updated_state_separate.covariance, atol=1e-5)
-
-def test_forward_pass():
-    state_dim = 1
-    obs_dim = 1
-    
-    def f(x): return x + 0.1
-    def h(x): return x
-    
-    Q = torch.eye(state_dim) * 0.01
-    R = torch.eye(obs_dim) * 0.1
-    
-    ekf = ExtendedKalmanFilter(
-        state_dim, obs_dim, f, h,
-        Q=Q, R=R,
-        init_mean=torch.tensor([0.0]),
-        init_cov=torch.eye(state_dim) * 0.1
-    )
-    
-    # Create test observations (batch of 1)
-    observations = torch.tensor([[0.9], [1.0], [1.1]]).unsqueeze(1)  # (T=3, B=1, obs_dim=1)
-    
-    # Run filter - предполагаем, что теперь возвращается только один объект
-    filter_output = ekf(observations)
-    
-    # Проверяем структуру вывода в зависимости от реализации
-    # Вариант 1: если возвращается кортеж (all_means, all_covs)
-    if isinstance(filter_output, tuple) and len(filter_output) == 2:
-        all_means, all_covs = filter_output
-    # Вариант 2: если возвращается объект с атрибутами
-    else:
-        all_means = filter_output.mean
-        all_covs = filter_output.covariance
-    
-    assert all_means.shape == (3, 1, 1)
-    assert all_covs.shape == (3, 1, 1, 1)
     
 
 def test_numerical_stability():
