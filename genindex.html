@@ -66,7 +66,10 @@
 <p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extended.html">Extended Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unscented.html">Unscented Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dkf.html">Deep Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
 </ul>
 
@@ -100,14 +103,18 @@
 <div class="genindex-jumpbox">
  <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="B">B</h2>
@@ -126,15 +133,37 @@
   </ul></td>
 </tr></table>
 
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter">DeepKalmanFilter (class in kalman.dkf)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter">ExtendedKalmanFilter (class in kalman.extended)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filters.html#kalman.filters.BaseFilter.forward">forward() (kalman.filters.BaseFilter method)</a>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter.forward">forward() (kalman.dkf.DeepKalmanFilter method)</a>
 
       <ul>
+        <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter.forward">(kalman.extended.ExtendedKalmanFilter method)</a>
+</li>
+        <li><a href="filters.html#kalman.filters.BaseFilter.forward">(kalman.filters.BaseFilter method)</a>
+</li>
         <li><a href="filters.html#kalman.filters.KalmanFilter.forward">(kalman.filters.KalmanFilter method)</a>
 </li>
         <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.forward">(kalman.unscented.UnscentedKalmanFilter method)</a>
+</li>
+        <li><a href="vkf.html#kalman.vkf.VBKalmanFilter.forward">(kalman.vkf.VBKalmanFilter method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -146,11 +175,37 @@
       <li><a href="gaussian.html#kalman.gaussian.GaussianState">GaussianState (class in kalman.gaussian)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vkf.html#kalman.vkf.VBKalmanFilter.get_measurement_covariance">get_measurement_covariance() (kalman.vkf.VBKalmanFilter method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter.infer">infer() (kalman.dkf.DeepKalmanFilter method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    kalman.dkf
+
+      <ul>
+        <li><a href="dkf.html#module-kalman.dkf">module</a>
+</li>
+      </ul></li>
+      <li>
+    kalman.extended
+
+      <ul>
+        <li><a href="extended.html#module-kalman.extended">module</a>
+</li>
+      </ul></li>
       <li>
     kalman.filters
 
@@ -158,6 +213,8 @@
         <li><a href="filters.html#module-kalman.filters">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kalman.gaussian
 
@@ -165,13 +222,18 @@
         <li><a href="gaussian.html#module-kalman.gaussian">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kalman.unscented
 
       <ul>
         <li><a href="unscented.html#module-kalman.unscented">module</a>
+</li>
+      </ul></li>
+      <li>
+    kalman.vkf
+
+      <ul>
+        <li><a href="vkf.html#module-kalman.vkf">module</a>
 </li>
       </ul></li>
       <li><a href="filters.html#kalman.filters.KalmanFilter">KalmanFilter (class in kalman.filters)</a>
@@ -188,6 +250,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gaussian.html#kalman.gaussian.GaussianState.log_likelihood">log_likelihood() (kalman.gaussian.GaussianState method)</a>
 </li>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter.loss">loss() (kalman.dkf.DeepKalmanFilter method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -202,11 +266,17 @@
     module
 
       <ul>
+        <li><a href="dkf.html#module-kalman.dkf">kalman.dkf</a>
+</li>
+        <li><a href="extended.html#module-kalman.extended">kalman.extended</a>
+</li>
         <li><a href="filters.html#module-kalman.filters">kalman.filters</a>
 </li>
         <li><a href="gaussian.html#module-kalman.gaussian">kalman.gaussian</a>
 </li>
         <li><a href="unscented.html#module-kalman.unscented">kalman.unscented</a>
+</li>
+        <li><a href="vkf.html#module-kalman.vkf">kalman.vkf</a>
 </li>
       </ul></li>
   </ul></td>
@@ -215,25 +285,35 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filters.html#kalman.filters.BaseFilter.predict">predict() (kalman.filters.BaseFilter method)</a>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter.predict">predict() (kalman.dkf.DeepKalmanFilter method)</a>
 
       <ul>
+        <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter.predict">(kalman.extended.ExtendedKalmanFilter method)</a>
+</li>
+        <li><a href="filters.html#kalman.filters.BaseFilter.predict">(kalman.filters.BaseFilter method)</a>
+</li>
         <li><a href="filters.html#kalman.filters.KalmanFilter.predict">(kalman.filters.KalmanFilter method)</a>
 </li>
         <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.predict">(kalman.unscented.UnscentedKalmanFilter method)</a>
 </li>
-      </ul></li>
-      <li><a href="filters.html#kalman.filters.BaseFilter.predict_">predict_() (kalman.filters.BaseFilter method)</a>
-
-      <ul>
-        <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.predict_">(kalman.unscented.UnscentedKalmanFilter method)</a>
+        <li><a href="vkf.html#kalman.vkf.VBKalmanFilter.predict">(kalman.vkf.VBKalmanFilter method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filters.html#kalman.filters.BaseFilter.predict_update">predict_update() (kalman.filters.BaseFilter method)</a>
+      <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter.predict_">predict_() (kalman.extended.ExtendedKalmanFilter method)</a>
 
       <ul>
+        <li><a href="filters.html#kalman.filters.BaseFilter.predict_">(kalman.filters.BaseFilter method)</a>
+</li>
+        <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.predict_">(kalman.unscented.UnscentedKalmanFilter method)</a>
+</li>
+      </ul></li>
+      <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter.predict_update">predict_update() (kalman.extended.ExtendedKalmanFilter method)</a>
+
+      <ul>
+        <li><a href="filters.html#kalman.filters.BaseFilter.predict_update">(kalman.filters.BaseFilter method)</a>
+</li>
         <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.predict_update">(kalman.unscented.UnscentedKalmanFilter method)</a>
 </li>
       </ul></li>
@@ -248,6 +328,10 @@
       <li><a href="gaussian.html#kalman.gaussian.GaussianState.to">to() (kalman.gaussian.GaussianState method)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter.train_step">train_step() (kalman.dkf.DeepKalmanFilter method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="U">U</h2>
@@ -255,22 +339,38 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter">UnscentedKalmanFilter (class in kalman.unscented)</a>
 </li>
-      <li><a href="filters.html#kalman.filters.BaseFilter.update">update() (kalman.filters.BaseFilter method)</a>
+      <li><a href="dkf.html#kalman.dkf.DeepKalmanFilter.update">update() (kalman.dkf.DeepKalmanFilter method)</a>
 
       <ul>
+        <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter.update">(kalman.extended.ExtendedKalmanFilter method)</a>
+</li>
+        <li><a href="filters.html#kalman.filters.BaseFilter.update">(kalman.filters.BaseFilter method)</a>
+</li>
         <li><a href="filters.html#kalman.filters.KalmanFilter.update">(kalman.filters.KalmanFilter method)</a>
 </li>
         <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.update">(kalman.unscented.UnscentedKalmanFilter method)</a>
 </li>
+        <li><a href="vkf.html#kalman.vkf.VBKalmanFilter.update">(kalman.vkf.VBKalmanFilter method)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="filters.html#kalman.filters.BaseFilter.update_">update_() (kalman.filters.BaseFilter method)</a>
+      <li><a href="extended.html#kalman.extended.ExtendedKalmanFilter.update_">update_() (kalman.extended.ExtendedKalmanFilter method)</a>
 
       <ul>
+        <li><a href="filters.html#kalman.filters.BaseFilter.update_">(kalman.filters.BaseFilter method)</a>
+</li>
         <li><a href="unscented.html#kalman.unscented.UnscentedKalmanFilter.update_">(kalman.unscented.UnscentedKalmanFilter method)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="vkf.html#kalman.vkf.VBKalmanFilter">VBKalmanFilter (class in kalman.vkf)</a>
+</li>
   </ul></td>
 </tr></table>
 

@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kalman.extended &mdash; Kalman filter and his friends  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Kalman filter and his friends
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html">Kalman Filter and Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#description">💡 Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#related-work">🔗 Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#tech-stack">📚 Tech Stack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#usage">👨‍💻 Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../info.html#links">📬 Links</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../blogpost.html">Why Should DL Researchers Care about Kalman Filters?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#theoretical-background">Theoretical Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#algorithm">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#kalman-gain">Kalman Gain</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#non-linear-kalman-filters">Non-Linear Kalman Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#our-framework">Our Framework</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extended.html">Extended Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unscented.html">Unscented Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vkf.html">Variational Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dkf.html">Deep Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian.html">Gaussian</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Kalman filter and his friends</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">kalman.extended</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for kalman.extended</h1><div class="highlight"><pre>
+<span></span><span class="c1"># kalman/extended.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianState</span>
+
+<div class="viewcode-block" id="ExtendedKalmanFilter">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExtendedKalmanFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic Extended Kalman Filter.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    state_dim : int</span>
+<span class="sd">        Dimension of latent state x.</span>
+<span class="sd">    obs_dim : int</span>
+<span class="sd">        Dimension of observation z.</span>
+<span class="sd">    f : Callable[[torch.Tensor], torch.Tensor]</span>
+<span class="sd">        Non‑linear transition function x_{k|k} → x_{k+1|k}.</span>
+<span class="sd">        Must broadcast over batches.  Shape: (*, state_dim) → (*, state_dim)</span>
+<span class="sd">    h : Callable[[torch.Tensor], torch.Tensor]</span>
+<span class="sd">        Non‑linear measurement function x_{k|k} → z_pred.</span>
+<span class="sd">        Shape: (*, state_dim) → (*, obs_dim)</span>
+<span class="sd">    F_jacobian : Optional[Callable[[torch.Tensor], torch.Tensor]]</span>
+<span class="sd">        Function returning Jacobian of `f` w.r.t. x.</span>
+<span class="sd">        Shape: (*, state_dim, state_dim).  If None, computed by autograd.</span>
+<span class="sd">    H_jacobian : Optional[Callable[[torch.Tensor], torch.Tensor]]</span>
+<span class="sd">        Function returning Jacobian of `h` w.r.t. x.</span>
+<span class="sd">        Shape: (*, obs_dim, state_dim).  If None, computed by autograd.</span>
+<span class="sd">    Q : Optional[torch.Tensor]</span>
+<span class="sd">        Process‑noise covariance (state_dim × state_dim).  Broadcastable to batch.</span>
+<span class="sd">        Defaults to identity.</span>
+<span class="sd">    R : Optional[torch.Tensor]</span>
+<span class="sd">        Measurement‑noise covariance (obs_dim × obs_dim).  Broadcastable to batch.</span>
+<span class="sd">        Defaults to identity.</span>
+<span class="sd">    init_mean : Optional[torch.Tensor]</span>
+<span class="sd">        Initial state mean (state_dim,) or (B, state_dim).</span>
+<span class="sd">        If None, zeros.</span>
+<span class="sd">    init_cov : Optional[torch.Tensor]</span>
+<span class="sd">        Initial state covariance (state_dim×state_dim) or (B, state_dim, state_dim).</span>
+<span class="sd">        If None, identity.</span>
+<span class="sd">    smooth : bool</span>
+<span class="sd">        Ignored for now (placeholder for RTS smoother).</span>
+<span class="sd">    eps : float</span>
+<span class="sd">        Jitter added to diagonals for numerical stability.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">obs_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">h</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">F_jacobian</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">H_jacobian</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">Q</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">R</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">init_mean</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">init_cov</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">obs_dim</span><span class="p">,</span> <span class="n">smooth</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">F_jac_fn</span> <span class="o">=</span> <span class="n">F_jacobian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H_jac_fn</span> <span class="o">=</span> <span class="n">H_jacobian</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+
+        <span class="n">eye_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">state_dim</span><span class="p">)</span>
+        <span class="n">eye_z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">obs_dim</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="n">eye_x</span> <span class="k">if</span> <span class="n">Q</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Q</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eye_z</span> <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">R</span><span class="p">)</span>
+
+        <span class="c1"># Initial posterior (after update of “time 0 – 1”).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+            <span class="s2">&quot;_init_mean&quot;</span><span class="p">,</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">state_dim</span><span class="p">)</span> <span class="k">if</span> <span class="n">init_mean</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">init_mean</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span>
+            <span class="s2">&quot;_init_cov&quot;</span><span class="p">,</span>
+            <span class="n">eye_x</span> <span class="k">if</span> <span class="n">init_cov</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">init_cov</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="c1">#                               helpers                                   #</span>
+    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_autograd_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute Jacobian of `fn` wrt x with autograd.</span>
+<span class="sd">        Shapes</span>
+<span class="sd">            x  : (*, N)</span>
+<span class="sd">            out: (*, M, N)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># (*, M)</span>
+        <span class="c1"># torch.autograd.functional.jacobian explodes memory if we pass batch.</span>
+        <span class="c1"># We loop over batch dims to stay safe.</span>
+        <span class="n">flat_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">flat_y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">J_blocks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">_xi</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="n">_xi</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">xi</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">flat_x</span>
+        <span class="p">]</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">J_blocks</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># (B, M, N)</span>
+        <span class="k">return</span> <span class="n">J</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">J</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_F</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F_jac_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">F_jac_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autograd_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_H</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">H_jac_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">H_jac_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autograd_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="c1">#                      predict / update primitives                       #</span>
+    <span class="c1"># ---------------------------------------------------------------------- #</span>
+<div class="viewcode-block" id="ExtendedKalmanFilter.predict_">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.predict_">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        EKF time‑update (prediction) step.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Predicted state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># x̂_{k|k-1}</span>
+        <span class="n">m_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">state_mean</span><span class="p">)</span>
+
+        <span class="c1"># F_k</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">state_mean</span><span class="p">)</span>  <span class="c1"># (*, N, N)</span>
+
+        <span class="c1"># P_{k|k-1} = F P Fᵀ + Q</span>
+        <span class="n">P_pred</span> <span class="o">=</span> <span class="n">F</span> <span class="o">@</span> <span class="n">state_cov</span> <span class="o">@</span> <span class="n">F</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q</span>
+
+        <span class="c1"># add jitter to keep symmetry / positive‑definite.</span>
+        <span class="n">P_pred</span> <span class="o">=</span> <span class="n">P_pred</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">P_pred</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">m_pred</span><span class="p">,</span> <span class="n">P_pred</span></div>
+
+
+<div class="viewcode-block" id="ExtendedKalmanFilter.update_">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.update_">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        EKF measurement‑update (correction) step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Innovation y_k = z_k - h(x̂_{k|k-1})</span>
+        <span class="n">z_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">state_mean</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">measurement</span> <span class="o">-</span> <span class="n">z_pred</span>  <span class="c1"># (*, obs_dim)</span>
+
+        <span class="c1"># H_k</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="p">(</span><span class="n">state_mean</span><span class="p">)</span>  <span class="c1"># (*, obs_dim, state_dim)</span>
+
+        <span class="c1"># S_k = H P Hᵀ + R</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">H</span> <span class="o">@</span> <span class="n">state_cov</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">S</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obs_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># Kalman gain K_k = P Hᵀ S⁻¹</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">state_cov</span> <span class="o">@</span> <span class="n">H</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+
+        <span class="c1"># Updated mean x̂_{k|k}</span>
+        <span class="n">m_upd</span> <span class="o">=</span> <span class="n">state_mean</span> <span class="o">+</span> <span class="p">(</span><span class="n">K</span> <span class="o">@</span> <span class="n">y</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Joseph‑form covariance update for numerical stability</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">state_cov</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">ImKH</span> <span class="o">=</span> <span class="n">I</span> <span class="o">-</span> <span class="n">K</span> <span class="o">@</span> <span class="n">H</span>
+        <span class="n">P_upd</span> <span class="o">=</span> <span class="n">ImKH</span> <span class="o">@</span> <span class="n">state_cov</span> <span class="o">@</span> <span class="n">ImKH</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">K</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">@</span> <span class="n">K</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">P_upd</span> <span class="o">=</span> <span class="n">P_upd</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">P_upd</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">m_upd</span><span class="p">,</span> <span class="n">P_upd</span></div>
+
+    
+<div class="viewcode-block" id="ExtendedKalmanFilter.predict">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        EKF time‑update (prediction) step.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Predicted state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ExtendedKalmanFilter.update">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        EKF measurement‑update (correction) step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">covariance</span><span class="p">,</span> <span class="n">measurement</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span></div>
+
+ 
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                    combined predict‑and‑update step                #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+<div class="viewcode-block" id="ExtendedKalmanFilter.predict_update">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.predict_update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span> 
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience wrapper that performs a *time‑update* immediately</span>
+<span class="sd">        followed by a *measurement‑update*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state : torch.GaussianState</span>
+<span class="sd">        measurement : torch.Tensor</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_mean, new_cov : Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">            Posterior x̂_{k|k} and P_{k|k} after incorporating z_k.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1) predict to time‑k</span>
+        <span class="n">predicted_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="c1"># 2) correct with the incoming measurement</span>
+        <span class="n">updated_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">predicted_state</span><span class="p">,</span> <span class="n">measurement</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">updated_state</span></div>
+
+
+    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="c1">#                       sequence processing (filter)                     #</span>
+    <span class="c1"># ---------------------------------------------------------------------- #</span>
+<div class="viewcode-block" id="ExtendedKalmanFilter.forward">
+<a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the EKF over a sequence of observations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observations : torch.Tensor</span>
+<span class="sd">            Shape (T, B, obs_dim)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory</span>
+<span class="sd">        (all_means, all_covs) : Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">            Means shape (T, B, state_dim)</span>
+<span class="sd">            Covs  shape (T, B, state_dim, state_dim)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">observations</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">observations</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">observations</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">covs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span><span class="p">,</span> <span class="n">observations</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+
+            <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_mean</span><span class="p">)</span>
+            <span class="n">covs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_cov</span><span class="p">)</span>
+
+        <span class="n">all_means</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">means</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># (T, B, state_dim)</span>
+        <span class="n">all_covs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">covs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>    <span class="c1"># (T, B, state_dim, state_dim)</span>
+
+        <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span><span class="n">all_means</span><span class="p">,</span> <span class="n">all_covs</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
