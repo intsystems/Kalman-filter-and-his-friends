@@ -37,7 +37,7 @@ class VBKalmanFilter(BaseFilter):
         self.B = B if B is not None else torch.sqrt(torch.tensor(rho)) * torch.eye(obs_dim)
         
         # Инициализация параметров обратного распределения Уишарта
-        self.nu = 2 * obs_dim + 1  # Степени свободы
+        self.nu = obs_dim + 2  # Степени свободы
         self.V = (self.nu - obs_dim - 1) * initial_measurement_cov  # Масштабная матрица
         
     def predict(self,
@@ -68,24 +68,22 @@ class VBKalmanFilter(BaseFilter):
         y = measurement
         
         # Инициализация параметров
-        m = state.mean
-        P = state.covariance
+        m = state.mean.clone()
+        P = state.covariance.clone()
         nu = self.nu + 1
         V = self.V.clone()
-        for _ in range(2):
+        for i in range(5):
             R_inv = (nu - self.obs_dim - 1) * torch.inverse(V)
             S = H @ P @ H.T + torch.inverse(R_inv)
             K = P @ H.T @ torch.inverse(S)
             
-            residual = y - m @ H.T
-            m = m + torch.einsum('bhv,bv->bh', K, residual)
-            P = P - K @ S @ K.transpose(1, 2)
+            m = state.mean + torch.einsum('hv,v->h', K, y - state.mean @ H.T)
+            P = state.covariance - K @ S @ K.transpose(-1, -2)
             
             # Обновление параметров ковариации
-            V = self.V + H @ P @ H.T + torch.einsum('bi,bj->bij', residual, residual)
+            V = self.V + H @ P @ H.T + torch.einsum('i,j->ij', y - m @ H.T, y - m @ H.T)
         
         # Сохраняем новые параметры
-        self.nu = nu
         self.V = V
         
         return GaussianState(m, P)
