@@ -45,22 +45,22 @@ def test_predict_step(setup_filter):
 def test_update_step(setup_filter):
     filter, _, _ = setup_filter
     state = GaussianState(
-        mean=torch.tensor([[1.0, 0.0]]),
-        covariance=torch.eye(2).unsqueeze(0)
+        mean=torch.tensor([1.0, 0.0]),
+        covariance=torch.eye(2)
     )
-    measurement = torch.tensor([[1.1]])
+    measurement = torch.tensor([1.1])
     updated_state = filter.update(state, measurement)
-    assert updated_state.mean.shape == (1, 2)
-    assert updated_state.covariance.shape == (1, 2, 2)
+    assert updated_state.mean.shape == (2,)
+    assert updated_state.covariance.shape == (2, 2)
 
 
 def test_forward_pass(setup_filter):
     filter, _, _ = setup_filter
-    T, B = 10, 3
-    observations = torch.randn(T, B, filter.obs_dim)
+    T = 10
+    observations = torch.randn(T, filter.obs_dim)
     means, covs = filter(observations)
-    assert means.shape == (T, B, filter.state_dim)
-    assert covs.shape == (T, B, filter.state_dim, filter.state_dim)
+    assert means.shape == (T, filter.state_dim)
+    assert covs.shape == (T, filter.state_dim, filter.state_dim)
 
 
 def test_measurement_covariance(setup_filter):
@@ -72,8 +72,8 @@ def test_measurement_covariance(setup_filter):
 
 def test_full_sequence_with_random_data(setup_filter):
     filter, _, _ = setup_filter
-    T, B = 50, 16
-    observations = torch.randn(T, B, filter.obs_dim)
+    T = 50
+    observations = torch.randn(T, filter.obs_dim)
     means, covs = filter(observations)
     assert not torch.isnan(means).any()
     assert not torch.isnan(covs).any()

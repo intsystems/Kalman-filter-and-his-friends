@@ -92,14 +92,14 @@ class VBKalmanFilter(BaseFilter):
         """
         Process full sequence (T, B, obs_dim)
         """
-        T, B, _ = observations.shape
-        means = torch.zeros(T, B, self.state_dim)
-        covs = torch.zeros(T, B, self.state_dim, self.state_dim)
+        T, _ = observations.shape
+        means = torch.zeros(T, self.state_dim)
+        covs = torch.zeros(T, self.state_dim, self.state_dim)
         
         # Инициализация
         current_state = GaussianState(
-            torch.zeros(B, self.state_dim),
-            torch.eye(self.state_dim).repeat(B, 1, 1))
+            torch.zeros(self.state_dim),
+            torch.eye(self.state_dim).repeat(1, 1))
         
         for t in range(T):
             # Predict
