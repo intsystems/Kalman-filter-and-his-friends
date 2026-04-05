@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from torch.distributions import Normal
 from kalman.gaussian import GaussianState
 from kalman.filters import BaseFilter
 
@@ -71,8 +70,8 @@ class DeepKalmanFilter(BaseFilter):
         # --- Transition ---
         if self.params["transition_type"] == "mlp":
             self.p_trans = nn.ModuleList()
-            for l in range(self.params["transition_layers"]):
-                in_dim = self.state_dim if l == 0 else self.params["dim_hidden"] * 2
+            for idx in range(self.params["transition_layers"]):
+                in_dim = self.state_dim if idx == 0 else self.params["dim_hidden"] * 2
                 self.p_trans.append(nn.Linear(in_dim, self.params["dim_hidden"] * 2))
             self.p_trans_W_mu = nn.Linear(self.params["dim_hidden"] * 2, self.state_dim)
             self.p_trans_W_cov = nn.Linear(self.params["dim_hidden"] * 2, self.state_dim)
@@ -97,8 +96,8 @@ class DeepKalmanFilter(BaseFilter):
         # --- Emission ---
         if self.params["emission_type"] == "mlp":
             self.p_emis = nn.ModuleList()
-            for l in range(self.params["emission_layers"]):
-                in_dim = self.state_dim if l == 0 else self.params["dim_hidden"]
+            for idx in range(self.params["emission_layers"]):
+                in_dim = self.state_dim if idx == 0 else self.params["dim_hidden"]
                 self.p_emis.append(nn.Linear(in_dim, self.params["dim_hidden"]))
             if self.params["data_type"] == "binary":
                 self.p_emis_out = nn.Linear(self.params["dim_hidden"], self.obs_dim)
@@ -336,7 +335,7 @@ class DeepKalmanFilter(BaseFilter):
         p_mu = torch.zeros_like(z)
         p_var = torch.ones_like(z)
 
-        if T > 1 and not ("synthetic" in self.params["dataset"]):
+        if T > 1 and "synthetic" not in self.params["dataset"]:
             z_prev = z[:-1]  # (T-1, B, state_dim)
             state_prev = GaussianState(z_prev, torch.ones_like(z_prev))
             trans = self._get_transition(state_prev)

@@ -3,7 +3,6 @@ from overrides import override
 
 import torch
 from torch import nn
-from typing import Optional
 
 from kalman.gaussian import GaussianState
 
@@ -35,8 +34,8 @@ class BaseFilter(nn.Module):
         self.smooth = smooth
 
     def predict_(
-        self, 
-        state_mean: torch.Tensor, 
+        self,
+        state_mean: torch.Tensor,
         state_cov: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -47,9 +46,9 @@ class BaseFilter(nn.Module):
         pass
 
     def update_(
-        self, 
-        state_mean: torch.Tensor, 
-        state_cov: torch.Tensor, 
+        self,
+        state_mean: torch.Tensor,
+        state_cov: torch.Tensor,
         measurement: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -58,7 +57,7 @@ class BaseFilter(nn.Module):
             updated_state_mean, updated_state_cov
         """
         pass
-    
+
     def predict(self, state: GaussianState) -> GaussianState:
         """
         Single-step predict.
@@ -78,13 +77,13 @@ class BaseFilter(nn.Module):
         return GaussianState(m, P)
 
     def predict_update(
-        self, 
-        state: GaussianState, 
+        self,
+        state: GaussianState,
         measurement: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Single-step predict and update in one function.
-        Returns: 
+        Returns:
             updated_state_mean, updated_state_cov
         """
         predicted_state = self.predict(state)
@@ -99,7 +98,7 @@ class BaseFilter(nn.Module):
         all_states, all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory
         """
         pass
-        
+
 
 class KalmanFilter(BaseFilter):
     """
@@ -132,7 +131,7 @@ class KalmanFilter(BaseFilter):
     @property
     def measurement_noise(self) -> torch.Tensor:
         return self._measurement_noise()
-        
+
     def predict(self,
         state: GaussianState,
         *,
@@ -206,7 +205,7 @@ class KalmanFilter(BaseFilter):
         """
         Update step of the Kalman Filter.
         """
-        
+
         if measurement_matrix is None:
             measurement_matrix = self.measurement_matrix
         if measurement_noise is None:
@@ -229,7 +228,7 @@ class KalmanFilter(BaseFilter):
         )  # now it is (B, state_dim, state_dim)
 
         return GaussianState(updated_mean, updated_cov)
-    
+
     def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Run the Kalman Filter over a sequence of observations.
@@ -240,5 +239,5 @@ class KalmanFilter(BaseFilter):
         for obs in observations:
             state = self.update(state, obs)
             means.append(state.mean)
-            covs.append(state.covariance)   
+            covs.append(state.covariance)
         return GaussianState(torch.stack(means), torch.stack(covs))

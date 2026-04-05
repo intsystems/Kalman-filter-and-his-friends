@@ -106,11 +106,10 @@ class ExtendedKalmanFilter(BaseFilter):
             out: (*, M, N)
         """
         x = x.clone().requires_grad_(True)
-        y = fn(x)  # (*, M)
+        fn(x)  # (*, M)
         # torch.autograd.functional.jacobian explodes memory if we pass batch.
         # We loop over batch dims to stay safe.
         flat_x = x.view(-1, x.shape[-1])
-        flat_y = y.view(-1, y.shape[-1])
 
         J_blocks = [
             torch.autograd.functional.jacobian(
@@ -146,7 +145,7 @@ class ExtendedKalmanFilter(BaseFilter):
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         EKF time‑update (prediction) step.
-        
+
         Returns:
             Predicted state
         """
@@ -191,19 +190,19 @@ class ExtendedKalmanFilter(BaseFilter):
         m_upd = state_mean + (K @ y.unsqueeze(-1)).squeeze(-1)
 
         # Joseph‑form covariance update for numerical stability
-        I = torch.eye(self.state_dim, device=state_cov.device)
-        ImKH = I - K @ H
+        eye = torch.eye(self.state_dim, device=state_cov.device)
+        ImKH = eye - K @ H
         P_upd = ImKH @ state_cov @ ImKH.transpose(-1, -2) + K @ self.R @ K.transpose(
             -1, -2
         )
         P_upd = P_upd + self.eps * torch.eye(self.state_dim, device=P_upd.device)
 
         return m_upd, P_upd
-    
+
     def predict(self, state: GaussianState) -> GaussianState:
         """
         EKF time‑update (prediction) step.
-        
+
         Returns:
             Predicted state
         """
@@ -216,13 +215,13 @@ class ExtendedKalmanFilter(BaseFilter):
         """
         m, P = self.update_(state.mean, state.covariance, measurement)
         return GaussianState(m, P)
- 
+
     # ------------------------------------------------------------------ #
     #                    combined predict‑and‑update step                #
     # ------------------------------------------------------------------ #
     def predict_update(
         self,
-        state: GaussianState, 
+        state: GaussianState,
         measurement: torch.Tensor,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -243,7 +242,7 @@ class ExtendedKalmanFilter(BaseFilter):
         predicted_state = self.predict(state)
         # 2) correct with the incoming measurement
         updated_state = self.update(predicted_state, measurement)
-        
+
         return updated_state
 
     # ---------------------------------------------------------------------- #

@@ -6,22 +6,23 @@ Install
 
 .. code-block:: bash
 
-   git clone https://github.com/intsystems/Kalman-filter-and-his-friends /tmp/Kalman-filter-and-his-friends
-   python3 -m pip install /tmp/Kalman-filter-and-his-friends/src/
+   git clone https://github.com/intsystems/Kalman-filter-and-his-friends
+   cd Kalman-filter-and-his-friends
+   pip install src/
 
 Uninstall
 ---------
 
 .. code-block:: bash
 
-   python3 -m pip uninstall kalman
+   pip uninstall kalman
 
 
 Basic Usage
 ===========
 
-1. Standard Kalman Filter
--------------------------
+1. Kalman Filter
+----------------
 
 .. code-block:: python
 
@@ -29,27 +30,22 @@ Basic Usage
    from kalman.filters import KalmanFilter
    from kalman.gaussian import GaussianState
 
-   state_dim, obs_dim = 4, 2
-
    kf = KalmanFilter(
-       process_matrix=torch.eye(state_dim),
-       measurement_matrix=torch.randn(obs_dim, state_dim),
-       process_noise=0.01 * torch.eye(state_dim),
-       measurement_noise=torch.eye(obs_dim),
+       process_matrix=torch.eye(4),
+       measurement_matrix=torch.eye(2, 4),
+       process_noise=0.01 * torch.eye(4),
+       measurement_noise=0.1 * torch.eye(2),
    )
 
-   # Initialize state
    state = GaussianState(
-       mean=torch.zeros(state_dim),
-       covariance=torch.eye(state_dim),
+       mean=torch.zeros(4),
+       covariance=torch.eye(4),
    )
 
-   measurements = torch.randn(10, obs_dim)
-
-   for z in measurements:
+   for z in torch.randn(10, 2):
        state = kf.predict(state)
        state = kf.update(state, z)
-       print("State estimate:", state.mean)
+       print("State:", state.mean)
 
 2. Extended Kalman Filter
 -------------------------
@@ -58,16 +54,23 @@ Basic Usage
 
    import torch
    from kalman.extended import ExtendedKalmanFilter
+   from kalman.gaussian import GaussianState
 
    ekf = ExtendedKalmanFilter(
        state_dim=4,
        obs_dim=2,
-       f=lambda x: x,          # transition function
-       h=lambda x: x[..., :2], # measurement function
+       f=lambda x: x,            # transition function
+       h=lambda x: x[..., :2],   # measurement function
+       Q=0.01 * torch.eye(4),
+       R=0.1 * torch.eye(2),
    )
 
-   state = ekf.init_state()
-   for z in measurements:
+   state = GaussianState(
+       mean=torch.zeros(4),
+       covariance=torch.eye(4),
+   )
+
+   for z in torch.randn(10, 2):
        state = ekf.predict(state)
        state = ekf.update(state, z)
 
@@ -76,27 +79,41 @@ Basic Usage
 
 .. code-block:: python
 
+   import torch
    from kalman.unscented import UnscentedKalmanFilter
+   from kalman.gaussian import GaussianState
 
    ukf = UnscentedKalmanFilter(
        state_dim=4,
        obs_dim=2,
        f=lambda x: x,
        h=lambda x: x[..., :2],
+       Q=0.01 * torch.eye(4, dtype=torch.float64),
+       R=0.1 * torch.eye(2, dtype=torch.float64),
    )
+
+   state = GaussianState(
+       mean=torch.zeros(4, dtype=torch.float64),
+       covariance=torch.eye(4, dtype=torch.float64),
+   )
+
+   for z in torch.randn(10, 2, dtype=torch.float64):
+       state = ukf.predict(state)
+       state = ukf.update(state, z)
 
 4. Variational Bayesian Kalman Filter
 --------------------------------------
 
 .. code-block:: python
 
+   import torch
    from kalman.vkf import VBKalmanFilter
 
    vbkf = VBKalmanFilter(
-       process_matrix=torch.eye(state_dim),
-       measurement_matrix=torch.randn(obs_dim, state_dim),
-       process_noise=0.01 * torch.eye(state_dim),
-       initial_measurement_cov=torch.eye(obs_dim),
+       process_matrix=torch.eye(4),
+       measurement_matrix=torch.eye(2, 4),
+       process_noise=0.01 * torch.eye(4),
+       initial_measurement_cov=torch.eye(2),
    )
 
 5. Deep Kalman Filter
@@ -107,20 +124,25 @@ Basic Usage
    from kalman.dkf import DeepKalmanFilter
 
    dkf = DeepKalmanFilter(
-       state_dim=16,
-       obs_dim=4,
+       state_dim=8,
+       obs_dim=28,
        params={
+           "dataset": "example",
            "transition_type": "mlp",
            "transition_layers": 2,
            "emission_type": "mlp",
            "emission_layers": 2,
+           "data_type": "real",
            "dim_hidden": 64,
            "var_model": "LR",
            "rnn_size": 64,
            "rnn_layers": 1,
-           "inference_model": "structured",
+           "inference_model": "mean_field",
            "use_prev_input": False,
-           "data_type": "real",
-           "dataset": "example",
        },
    )
+
+   # Train with ELBO loss
+   observations = torch.randn(20, 8, 28)   # (T, B, obs_dim)
+   mask = torch.ones(20, 8)
+   loss, nll, kl = dkf.loss(observations, mask)

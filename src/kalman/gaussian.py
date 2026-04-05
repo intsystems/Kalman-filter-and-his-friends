@@ -2,7 +2,6 @@
 # https://github.com/raphaelreme/torch-kf/blob/main/torch_kf/kalman_filter.py
 
 import torch
-from torch import nn
 from typing import Optional, overload
 
 
@@ -23,7 +22,7 @@ class GaussianState:
         self.mean = mean
         self.covariance = covariance
         self.precision = precision
-    
+
     def clone(self) -> "GaussianState":
         """Clone the Gaussian State using `torch.Tensor.clone`
 

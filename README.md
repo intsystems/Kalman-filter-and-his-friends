@@ -1,26 +1,27 @@
-<div align="center">  
+<div align="center">
     <h1> Kalman Filter and Extensions </h1>
 </div>
 
-<div align="center">  
+<div align="center">
     <img src="doc/source/images/kalman-filter-banner.svg" width="700px" />
 </div>
 
 <p align="center">
-    <a href="">
+    <a href="https://pytorch.org/">
+        <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=pytorch&logoColor=white" />
+    </a>
+    <a href="https://www.python.org/">
+        <img alt="Python" src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white" />
+    </a>
+    <a href="https://github.com/intsystems/Kalman-filter-and-his-friends/actions/workflows/docs.yml">
         <img alt="Docs" src="https://github.com/intsystems/Kalman-filter-and-his-friends/actions/workflows/docs.yml/badge.svg" />
     </a>
-    <a href="">
-        <img alt="Blog" src="https://img.shields.io/badge/Medium-12100E?style=flat&logo=medium&logoColor=white" />
+    <a href="https://opensource.org/licenses/MIT">
+        <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg" />
     </a>
 </p>
 
-
 <table>
-    <tr>
-        <td align="left"> <b> Title </b> </td>
-        <td> Kalman Filter and Extensions </td>
-    </tr>
     <tr>
         <td align="left"> <b> Authors </b> </td>
         <td> Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk </td>
@@ -31,64 +32,108 @@
     </tr>
 </table>
 
-## 💡 Description
+## Description
 
-This project focuses on implementing Kalman Filters and their extensions in a simple and clear manner. Despite their importance, these state-space models remain underrepresented in the deep learning community. Our goal is to create a well-documented and efficient implementation that aligns with existing structured state-space models.
+A PyTorch library of Kalman filters and extensions with full autograd support. All filter parameters (transition matrices, noise covariances, initial states) are registered as `nn.Parameter` and can be trained via standard PyTorch optimizers. Covariance matrices are parameterized via Cholesky decomposition to guarantee positive-definiteness during optimization.
 
-## 📌 Algorithms Implemented
+## Algorithms
 
-- [x] **Kalman Filter** — linear state estimation
-- [x] **Extended Kalman Filter (EKF)** — first-order Taylor linearization
-- [x] **Unscented Kalman Filter (UKF)** — sigma-point sampling
-- [x] **Variational Bayesian Kalman Filter (VB-AKF)** — adaptive measurement noise estimation
-- [x] **Deep Kalman Filter (DKF)** — sequential VAE with neural transition and emission models
-
-## 🔗 Related Work
-
-- [PyTorch implementation of Kalman Filters](https://github.com/raphaelreme/torch-kf?tab=readme-ov-file)
-- [Extended Kalman Filter implementation in Pyro](https://pyro.ai/examples/ekf.html)
-- Compatibility considerations with [S4 and other SSM state-of-the-art models](https://github.com/state-spaces/s4)
-
-## 📚 Tech Stack
-
-The project is implemented using:
-
-- **Python**
-- **PyTorch** for tensor computation and differentiation
-- **NumPy** for numerical computations
-- **SciPy** for advanced mathematical functions
-- **Jupyter Notebooks** for experimentation and visualization
-
-You can install the required packages using pip:
+| Filter | Model | Jacobians | Adaptive R | Trainable |
+|--------|-------|-----------|------------|-----------|
+| **KalmanFilter** | Linear | -- | No | F, H, Q, R |
+| **ExtendedKalmanFilter** | Nonlinear | Yes / autograd | No | Q, R, init |
+| **UnscentedKalmanFilter** | Nonlinear | No | No | Q, R, init |
+| **VBKalmanFilter** | Linear | -- | Yes | F, H, Q |
+| **DeepKalmanFilter** | Neural network | -- | -- | All weights |
 
 ## Installation
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/intsystems/Kalman-filter-and-his-friends /tmp/Kalman-filter-and-his-friends
-    ```
-2. Install the dependencies:
-    ```bash
-    python3 -m pip install /tmp/Kalman-filter-and-his-friends/src/
-    ```
-
-## 👨‍💻 Usage
-
-Basic usage examples for different filters can be found in the `notebooks` folder.
-
-## ✅ Testing
-
-To run the tests after installing the package, execute the following command from the project root:
 ```bash
-PYTHONPATH="${PYTHONPATH}:src" pytest tests/ -v
+git clone https://github.com/intsystems/Kalman-filter-and-his-friends
+cd Kalman-filter-and-his-friends
+pip install src/
 ```
 
-## 📬 Links
+## Quick Start
+
+```python
+import torch
+from kalman.filters import KalmanFilter
+from kalman.gaussian import GaussianState
+
+F = torch.eye(4)                          # transition matrix
+H = torch.eye(2, 4)                       # measurement matrix
+Q = 0.01 * torch.eye(4)                   # process noise
+R = 0.1 * torch.eye(2)                    # measurement noise
+
+kf = KalmanFilter(F, H, Q, R)
+
+state = GaussianState(
+    mean=torch.zeros(4),
+    covariance=torch.eye(4),
+)
+
+for z in torch.randn(20, 2):              # 20 observations
+    state = kf.predict(state)
+    state = kf.update(state, z)
+
+print(state.mean)                         # filtered state estimate
+```
+
+### Training filter parameters
+
+```python
+optimizer = torch.optim.Adam(kf.parameters(), lr=1e-3)
+
+for epoch in range(100):
+    optimizer.zero_grad()
+    state = GaussianState(torch.zeros(4), torch.eye(4))
+    loss = 0.0
+    for t, z in enumerate(observations):
+        state = kf.predict(state)
+        state = kf.update(state, z)
+        loss = loss + ((state.mean - targets[t]) ** 2).sum()
+    loss.backward()
+    optimizer.step()
+```
+
+## Examples
+
+| Notebook | Description |
+|----------|-------------|
+| [`tutorial.ipynb`](notebooks/tutorial.ipynb) | All filters on circular motion tracking |
+| [`example_unscented.ipynb`](notebooks/example_unscented.ipynb) | EKF vs UKF on radar tracking (polar observations) |
+| [`example_variational.ipynb`](notebooks/example_variational.ipynb) | VBF with time-varying noise, DKF on synthetic signals |
+| [`example_satellite.ipynb`](notebooks/example_satellite.ipynb) | Satellite orbit tracking with Keplerian dynamics |
+| [`example_mnist.ipynb`](notebooks/example_mnist.ipynb) | DKF trained on MNIST digit sequences |
+
+## Testing
+
+```bash
+pip install pytest filterpy
+pytest tests/ -v
+```
+
+85 tests covering correctness (vs filterpy reference), gradient flow, training convergence, and numerical stability.
+
+## Documentation
+
 - [Library Documentation](https://intsystems.github.io/Kalman-filter-and-his-friends/)
 - [Blogpost](https://www.overleaf.com/read/qyvhbszcygjn#4ff3b8)
 
+## Related Work
+
+- [torch-kf](https://github.com/raphaelreme/torch-kf) -- PyTorch Kalman Filter
+- [Pyro EKF](https://pyro.ai/examples/ekf.html) -- Extended Kalman Filter in Pyro
+- [S4](https://github.com/state-spaces/s4) -- Structured State Space Models
+
 ## Authors
+
 - [Matvei Kreinin](https://github.com/kreininmv)
 - [Maria Nikitina](https://github.com/NikitinaMaria)
 - [Petr Babkin](https://github.com/petr-parker)
 - [Anastasia Voznyuk](https://github.com/natriistorm)
+
+## License
+
+MIT
