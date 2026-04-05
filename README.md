@@ -97,6 +97,35 @@ for epoch in range(100):
     optimizer.step()
 ```
 
+## Demos
+
+<table>
+<tr>
+<td align="center" width="50%">
+<a href="notebooks/demo_satellite.ipynb"><b>Satellite Orbit Tracking</b></a><br>
+EKF and UKF tracking a satellite in LEO<br><br>
+<a href="notebooks/demo_satellite.ipynb">
+<img src="doc/source/images/satellite_tracking.gif" width="100%" />
+</a>
+</td>
+<td align="center" width="50%">
+<a href="notebooks/demo_car.ipynb"><b>Car Tracking with Noisy GPS</b></a><br>
+EKF and UKF filtering noisy GPS on a curvy road<br><br>
+<a href="notebooks/demo_car.ipynb">
+<img src="doc/source/images/car_tracking.gif" width="100%" />
+</a>
+</td>
+</tr>
+</table>
+
+<div align="center">
+<a href="notebooks/demo_mnist_dkf.ipynb"><b>Deep Kalman Filter on MNIST</b></a><br>
+Row-by-row reconstruction of handwritten digits from a learned latent space<br><br>
+<a href="notebooks/demo_mnist_dkf.ipynb">
+<img src="doc/source/images/mnist_dkf.gif" width="700px" />
+</a>
+</div>
+
 ## Examples
 
 | Notebook | Description |
