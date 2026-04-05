@@ -121,10 +121,21 @@ using a variational Bayesian approach with an inverse-Wishart prior.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.forward" title="Link to this definition"></a></dt>
-<dd><p>Processes an entire sequence of observations in shape (T, B, obs_dim).
-Returns
-——-
-all_states, all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory</p>
+<dd><p>Process an entire sequence of observations.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>observations<span class="classifier">torch.Tensor</span></dt><dd><p>Shape (T, B, obs_dim).</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>GaussianState</dt><dd><p>Convenient wrapper holding the whole trajectory.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">

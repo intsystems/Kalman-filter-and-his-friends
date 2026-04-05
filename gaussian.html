@@ -131,93 +131,105 @@ Shape: (<a href="#id5"><span class="problematic" id="id6">*</span></a>, dim, dim
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.gaussian.GaussianState.clone">
 <span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/gaussian.html#GaussianState.clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.gaussian.GaussianState.clone" title="Link to this definition"></a></dt>
-<dd><p>Clone the Gaussian State using <cite>torch.Tensor.clone</cite></p>
+<dd><p>Clone the Gaussian State using <code class="docutils literal notranslate"><span class="pre">torch.Tensor.clone</span></code>.</p>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>Returns:</dt><dd><p>GaussianState: A copy of the Gaussian state</p>
+<dt>GaussianState</dt><dd><p>A copy of the Gaussian state.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.gaussian.GaussianState.likelihood">
 <span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/kalman/gaussian.html#GaussianState.likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.gaussian.GaussianState.likelihood" title="Link to this definition"></a></dt>
-<dd><p>Computes the likelihood of given measure</p>
-<p>It supports batch computation: You can provide multiple measurements and have multiple states
-You just need to ensure that shapes are broadcastable.</p>
+<dd><p>Compute the likelihood of given measure.</p>
+<p>Supports batch computation: you can provide multiple measurements
+and have multiple states. Shapes must be broadcastable.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>measure (torch.Tensor): Points to consider</dt><dd><p>Shape: (<a href="#id7"><span class="problematic" id="id8">*</span></a>, dim, 1)</p>
+<dt>measure<span class="classifier">torch.Tensor</span></dt><dd><p>Points to consider. Shape: (<a href="#id7"><span class="problematic" id="id8">*</span></a>, dim, 1).</p>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>torch.Tensor: Likelihood for each measure/state</dt><dd><p>Shape: (<a href="#id9"><span class="problematic" id="id10">*</span></a>, 1)</p>
+</section>
+<section id="id9">
+<h2>Returns<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>torch.Tensor</dt><dd><p>Likelihood for each measure/state. Shape: (<a href="#id10"><span class="problematic" id="id11">*</span></a>, 1).</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.gaussian.GaussianState.log_likelihood">
 <span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/kalman/gaussian.html#GaussianState.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.gaussian.GaussianState.log_likelihood" title="Link to this definition"></a></dt>
-<dd><p>Computes the log-likelihood of given measure</p>
-<p>It supports batch computation: You can provide multiple measurements and have multiple states
-You just need to ensure that shapes are broadcastable.</p>
+<dd><p>Compute the log-likelihood of given measure.</p>
+<p>Supports batch computation: you can provide multiple measurements
+and have multiple states. Shapes must be broadcastable.</p>
+<section id="id12">
+<h2>Parameters<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>measure (torch.Tensor): Points to consider</dt><dd><p>Shape: (<a href="#id11"><span class="problematic" id="id12">*</span></a>, dim, 1)</p>
+<dt>measure<span class="classifier">torch.Tensor</span></dt><dd><p>Points to consider. Shape: (<a href="#id13"><span class="problematic" id="id14">*</span></a>, dim, 1).</p>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>torch.Tensor: Log-likelihood for each measure/state</dt><dd><p>Shape: (<a href="#id13"><span class="problematic" id="id14">*</span></a>, 1)</p>
+</section>
+<section id="id15">
+<h2>Returns<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>torch.Tensor</dt><dd><p>Log-likelihood for each measure/state. Shape: (<a href="#id16"><span class="problematic" id="id17">*</span></a>, 1).</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.gaussian.GaussianState.mahalanobis">
 <span class="sig-name descname"><span class="pre">mahalanobis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/kalman/gaussian.html#GaussianState.mahalanobis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.gaussian.GaussianState.mahalanobis" title="Link to this definition"></a></dt>
-<dd><p>Computes the mahalanobis distance of given measure</p>
-<p>Computations of the sqrt can be slow. If you want to compare with a given threshold,
-you should rather compare the squared mahalanobis with the squared threshold.</p>
-<p>It supports batch computation: You can provide multiple measurements and have multiple states
-You just need to ensure that shapes are broadcastable.</p>
+<dd><p>Compute the Mahalanobis distance of given measure.</p>
+<p>Computations of the sqrt can be slow. If you want to compare with
+a given threshold, you should rather compare the squared Mahalanobis
+with the squared threshold.</p>
+<p>Supports batch computation: you can provide multiple measurements
+and have multiple states. Shapes must be broadcastable.</p>
+<section id="id18">
+<h2>Parameters<a class="headerlink" href="#id18" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>measure (torch.Tensor): Points to consider</dt><dd><p>Shape: (<a href="#id15"><span class="problematic" id="id16">*</span></a>, dim, 1)</p>
+<dt>measure<span class="classifier">torch.Tensor</span></dt><dd><p>Points to consider. Shape: (<a href="#id19"><span class="problematic" id="id20">*</span></a>, dim, 1).</p>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>torch.Tensor: Mahalanobis distance for each measure/state</dt><dd><p>Shape: (*)</p>
+</section>
+<section id="id21">
+<h2>Returns<a class="headerlink" href="#id21" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>torch.Tensor</dt><dd><p>Mahalanobis distance for each measure/state. Shape: (*).</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.gaussian.GaussianState.mahalanobis_squared">
 <span class="sig-name descname"><span class="pre">mahalanobis_squared</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/kalman/gaussian.html#GaussianState.mahalanobis_squared"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.gaussian.GaussianState.mahalanobis_squared" title="Link to this definition"></a></dt>
-<dd><p>Computes the squared mahalanobis distance of given measure</p>
-<p>It supports batch computation: You can provide multiple measurements and have multiple states
-You just need to ensure that shapes are broadcastable.</p>
+<dd><p>Compute the squared Mahalanobis distance of given measure.</p>
+<p>Supports batch computation: you can provide multiple measurements
+and have multiple states. Shapes must be broadcastable.</p>
+<section id="id22">
+<h2>Parameters<a class="headerlink" href="#id22" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>measure (torch.Tensor): Points to consider</dt><dd><p>Shape: (<a href="#id17"><span class="problematic" id="id18">*</span></a>, dim, 1)</p>
+<dt>measure<span class="classifier">torch.Tensor</span></dt><dd><p>Points to consider. Shape: (<a href="#id23"><span class="problematic" id="id24">*</span></a>, dim, 1).</p>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>torch.Tensor: Squared mahalanobis distance for each measure/state</dt><dd><p>Shape: (*)</p>
+</section>
+<section id="id25">
+<h2>Returns<a class="headerlink" href="#id25" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>torch.Tensor</dt><dd><p>Squared Mahalanobis distance for each measure/state. Shape: (*).</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
@@ -225,13 +237,21 @@ You just need to ensure that shapes are broadcastable.</p>
 <span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/gaussian.html#GaussianState.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.gaussian.GaussianState.to" title="Link to this definition"></a></dt>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span></dt>
-<dd><p>Convert a GaussianState to a specific device or dtype</p>
+<dd><p>Convert a GaussianState to a specific device or dtype.</p>
+<section id="id26">
+<h2>Parameters<a class="headerlink" href="#id26" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>Args:</dt><dd><p>fmt (torch.dtype | torch.device): Memory format to send the state to.</p>
-</dd>
-<dt>Returns:</dt><dd><p>GaussianState: The GaussianState with the right format</p>
+<dt>fmt<span class="classifier">torch.dtype | torch.device</span></dt><dd><p>Memory format to send the state to.</p>
 </dd>
 </dl>
+</section>
+<section id="id27">
+<h2>Returns<a class="headerlink" href="#id27" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>GaussianState</dt><dd><p>The GaussianState with the right format.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 </dd></dl>

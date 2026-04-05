@@ -197,11 +197,14 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
         <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Single-step predict and update in one function.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            updated_state_mean, updated_state_cov</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GaussianState</span>
+<span class="sd">            Updated state after predict and update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">predicted_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
         <span class="n">updated_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">predicted_state</span><span class="p">,</span> <span class="n">measurement</span><span class="p">)</span>
@@ -210,12 +213,19 @@
 
 <div class="viewcode-block" id="BaseFilter.forward">
 <a class="viewcode-back" href="../../filters.html#kalman.filters.BaseFilter.forward">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Processes an entire sequence of observations in shape (T, B, obs_dim).</span>
+<span class="sd">        Process an entire sequence of observations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observations : torch.Tensor</span>
+<span class="sd">            Shape (T, B, obs_dim).</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        all_states, all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory</span>
+<span class="sd">        GaussianState</span>
+<span class="sd">            Convenient wrapper holding the whole trajectory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
@@ -288,22 +298,28 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">measurement_matrix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">measurement_noise</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">precompute_precision</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">precompute_precision</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Project the current state (usually the prior) onto the measurement space</span>
-<span class="sd">        Args:</span>
-<span class="sd">            state (GaussianState): Current state estimation (Usually the results of `predict`)</span>
-<span class="sd">            measurement_matrix (Optional[torch.Tensor]): Overwrite the default projection matrix</span>
-<span class="sd">                Shape: (*, bs, state_dim)</span>
-<span class="sd">            measurement_noise (Optional[torch.Tensor]): Overwrite the default projection noise)</span>
-<span class="sd">                Shape: (*, obs_dim, obs_dim)</span>
-<span class="sd">            precompute_precision (bool): Precompute precision matrix (inverse covariance)</span>
-<span class="sd">                Done once to prevent more computations</span>
-<span class="sd">                Default: True</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Project the current state (usually the prior) onto the measurement space.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            GaussianState: Prior on the next state</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        state : GaussianState</span>
+<span class="sd">            Current state estimation (usually the result of ``predict``).</span>
+<span class="sd">        measurement_matrix : torch.Tensor, optional</span>
+<span class="sd">            Overwrite the default projection matrix.</span>
+<span class="sd">            Shape: (*, bs, state_dim).</span>
+<span class="sd">        measurement_noise : torch.Tensor, optional</span>
+<span class="sd">            Overwrite the default projection noise.</span>
+<span class="sd">            Shape: (*, obs_dim, obs_dim).</span>
+<span class="sd">        precompute_precision : bool</span>
+<span class="sd">            Precompute precision matrix (inverse covariance).</span>
+<span class="sd">            Done once to prevent more computations. Default: True.</span>
 
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GaussianState</span>
+<span class="sd">            Prior on the next state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">measurement_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">measurement_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_matrix</span>
@@ -364,9 +380,19 @@
 
 <div class="viewcode-block" id="KalmanFilter.forward">
 <a class="viewcode-back" href="../../filters.html#kalman.filters.KalmanFilter.forward">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the Kalman Filter over a sequence of observations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observations : torch.Tensor</span>
+<span class="sd">            Shape (T, B, obs_dim).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GaussianState</span>
+<span class="sd">            Filtered trajectory (means and covariances).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">covs</span> <span class="o">=</span> <span class="p">[]</span>

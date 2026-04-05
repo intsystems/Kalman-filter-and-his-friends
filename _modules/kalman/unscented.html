@@ -93,8 +93,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for kalman.unscented</h1><div class="highlight"><pre>
-<span></span><span class="c1"># kalman/unscented.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
@@ -181,7 +180,6 @@
         <span class="c1"># Cache for sigma points propagated through f (set by predict_, used by update_)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sigmas_f</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">Q</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q_spd</span><span class="p">()</span>
@@ -194,7 +192,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov_spd</span><span class="p">()</span>
 
-    <span class="c1"># ------------------------------------------------ sigma-points</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                          sigma points                              #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_sigma_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate 2n+1 sigma points.</span>
@@ -219,7 +219,9 @@
             <span class="n">sigma</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span> <span class="o">-</span> <span class="n">scaled</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># (..., 2n+1, n)</span>
 
-    <span class="c1"># ------------------------------------------------ unscented transform</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                       unscented transform                          #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_unscented_transform</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">sigma</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
@@ -247,10 +249,12 @@
         <span class="n">y_cov</span> <span class="o">=</span> <span class="n">y_cov</span> <span class="o">+</span> <span class="n">noise_cov</span>
         <span class="k">return</span> <span class="n">y_mean</span><span class="p">,</span> <span class="n">y_cov</span><span class="p">,</span> <span class="n">y_sigma</span>
 
-    <span class="c1"># ------------------------------------------------ predict / update</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                        predict / update                            #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
 <div class="viewcode-block" id="UnscentedKalmanFilter.predict_">
 <a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.predict_">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">predict_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        UKF prediction step.</span>
 <span class="sd">        Generates sigma points, propagates through f, computes predicted mean and cov.</span>
@@ -278,7 +282,7 @@
 
 <div class="viewcode-block" id="UnscentedKalmanFilter.update_">
 <a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.update_">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_mean</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">state_cov</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        UKF update step.</span>
 <span class="sd">        If predict_ was called beforehand, reuses the propagated sigma points (sigmas_f).</span>
@@ -326,9 +330,9 @@
         <span class="k">return</span> <span class="n">upd_mean</span><span class="p">,</span> <span class="n">upd_cov</span></div>
 
 
-    <span class="c1"># ================================================================== #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
     <span class="c1">#                   high-level GaussianState API                     #</span>
-    <span class="c1"># ================================================================== #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
 <div class="viewcode-block" id="UnscentedKalmanFilter.predict">
 <a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.predict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
@@ -349,12 +353,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="n">measurement</span><span class="p">)</span></div>
 
 
-    <span class="c1"># ================================================================== #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
     <span class="c1">#                        full sequence pass                          #</span>
-    <span class="c1"># ================================================================== #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
 <div class="viewcode-block" id="UnscentedKalmanFilter.forward">
 <a class="viewcode-back" href="../../unscented.html#kalman.unscented.UnscentedKalmanFilter.forward">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the UKF over a sequence of observations.</span>
 

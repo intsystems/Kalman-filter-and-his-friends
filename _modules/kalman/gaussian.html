@@ -93,11 +93,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for kalman.gaussian</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Author: torch-kf</span>
-<span class="c1"># https://github.com/raphaelreme/torch-kf/blob/main/torch_kf/kalman_filter.py</span>
+<span></span><span class="c1"># Based on: https://github.com/raphaelreme/torch-kf/blob/main/torch_kf/kalman_filter.py</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span>
 
 
 <div class="viewcode-block" id="GaussianState">
@@ -123,10 +123,12 @@
 <div class="viewcode-block" id="GaussianState.clone">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.clone">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GaussianState&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clone the Gaussian State using `torch.Tensor.clone`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clone the Gaussian State using ``torch.Tensor.clone``.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            GaussianState: A copy of the Gaussian state</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GaussianState</span>
+<span class="sd">            A copy of the Gaussian state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
@@ -158,13 +160,17 @@
 <div class="viewcode-block" id="GaussianState.to">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.to">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a GaussianState to a specific device or dtype</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a GaussianState to a specific device or dtype.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            fmt (torch.dtype | torch.device): Memory format to send the state to.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fmt : torch.dtype | torch.device</span>
+<span class="sd">            Memory format to send the state to.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            GaussianState: The GaussianState with the right format</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GaussianState</span>
+<span class="sd">            The GaussianState with the right format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">GaussianState</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">fmt</span><span class="p">),</span>
@@ -176,18 +182,20 @@
 <div class="viewcode-block" id="GaussianState.mahalanobis_squared">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.mahalanobis_squared">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mahalanobis_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the squared mahalanobis distance of given measure</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the squared Mahalanobis distance of given measure.</span>
 
-<span class="sd">        It supports batch computation: You can provide multiple measurements and have multiple states</span>
-<span class="sd">        You just need to ensure that shapes are broadcastable.</span>
+<span class="sd">        Supports batch computation: you can provide multiple measurements</span>
+<span class="sd">        and have multiple states. Shapes must be broadcastable.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            measure (torch.Tensor): Points to consider</span>
-<span class="sd">                Shape: (*, dim, 1)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        measure : torch.Tensor</span>
+<span class="sd">            Points to consider. Shape: (*, dim, 1).</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Squared mahalanobis distance for each measure/state</span>
-<span class="sd">                Shape: (*)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Squared Mahalanobis distance for each measure/state. Shape: (*).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">measure</span>  <span class="c1"># You are responsible for broadcast</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -202,21 +210,24 @@
 <div class="viewcode-block" id="GaussianState.mahalanobis">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.mahalanobis">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mahalanobis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the mahalanobis distance of given measure</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the Mahalanobis distance of given measure.</span>
 
-<span class="sd">        Computations of the sqrt can be slow. If you want to compare with a given threshold,</span>
-<span class="sd">        you should rather compare the squared mahalanobis with the squared threshold.</span>
+<span class="sd">        Computations of the sqrt can be slow. If you want to compare with</span>
+<span class="sd">        a given threshold, you should rather compare the squared Mahalanobis</span>
+<span class="sd">        with the squared threshold.</span>
 
-<span class="sd">        It supports batch computation: You can provide multiple measurements and have multiple states</span>
-<span class="sd">        You just need to ensure that shapes are broadcastable.</span>
+<span class="sd">        Supports batch computation: you can provide multiple measurements</span>
+<span class="sd">        and have multiple states. Shapes must be broadcastable.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            measure (torch.Tensor): Points to consider</span>
-<span class="sd">                Shape: (*, dim, 1)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        measure : torch.Tensor</span>
+<span class="sd">            Points to consider. Shape: (*, dim, 1).</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Mahalanobis distance for each measure/state</span>
-<span class="sd">                Shape: (*)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Mahalanobis distance for each measure/state. Shape: (*).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mahalanobis_squared</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span></div>
 
@@ -224,18 +235,20 @@
 <div class="viewcode-block" id="GaussianState.log_likelihood">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.log_likelihood">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the log-likelihood of given measure</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the log-likelihood of given measure.</span>
 
-<span class="sd">        It supports batch computation: You can provide multiple measurements and have multiple states</span>
-<span class="sd">        You just need to ensure that shapes are broadcastable.</span>
+<span class="sd">        Supports batch computation: you can provide multiple measurements</span>
+<span class="sd">        and have multiple states. Shapes must be broadcastable.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            measure (torch.Tensor): Points to consider</span>
-<span class="sd">                Shape: (*, dim, 1)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        measure : torch.Tensor</span>
+<span class="sd">            Points to consider. Shape: (*, dim, 1).</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Log-likelihood for each measure/state</span>
-<span class="sd">                Shape: (*, 1)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Log-likelihood for each measure/state. Shape: (*, 1).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">maha_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mahalanobis_squared</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span>
         <span class="n">log_det</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance</span><span class="p">))</span>
@@ -246,18 +259,20 @@
 <div class="viewcode-block" id="GaussianState.likelihood">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.likelihood">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measure</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the likelihood of given measure</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the likelihood of given measure.</span>
 
-<span class="sd">        It supports batch computation: You can provide multiple measurements and have multiple states</span>
-<span class="sd">        You just need to ensure that shapes are broadcastable.</span>
+<span class="sd">        Supports batch computation: you can provide multiple measurements</span>
+<span class="sd">        and have multiple states. Shapes must be broadcastable.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            measure (torch.Tensor): Points to consider</span>
-<span class="sd">                Shape: (*, dim, 1)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        measure : torch.Tensor</span>
+<span class="sd">            Points to consider. Shape: (*, dim, 1).</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Likelihood for each measure/state</span>
-<span class="sd">                Shape: (*, 1)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Likelihood for each measure/state. Shape: (*, 1).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span></div>
 </div>

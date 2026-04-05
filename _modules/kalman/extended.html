@@ -93,12 +93,14 @@
            <div itemprop="articleBody">
              
   <h1>Source code for kalman.extended</h1><div class="highlight"><pre>
-<span></span><span class="c1"># kalman/extended.py</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">kalman.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">SPDParameter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kalman.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianState</span>
+
 
 <div class="viewcode-block" id="ExtendedKalmanFilter">
 <a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter">[docs]</a>
@@ -179,7 +181,6 @@
             <span class="n">eye_x</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">if</span> <span class="n">init_cov</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">init_cov</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
         <span class="p">)</span>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">Q</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Q_spd</span><span class="p">()</span>
@@ -192,9 +193,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_cov</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_cov_spd</span><span class="p">()</span>
 
-    <span class="c1"># ---------------------------------------------------------------------- #</span>
-    <span class="c1">#                               helpers                                   #</span>
-    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                            helpers                                  #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_autograd_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute Jacobian of `fn` wrt x with autograd.</span>
@@ -232,9 +233,9 @@
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autograd_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="c1"># ---------------------------------------------------------------------- #</span>
-    <span class="c1">#                      predict / update primitives                       #</span>
-    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                    predict / update primitives                      #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
 <div class="viewcode-block" id="ExtendedKalmanFilter.predict_">
 <a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.predict_">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">predict_</span><span class="p">(</span>
@@ -334,7 +335,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">GaussianState</span><span class="p">,</span>
         <span class="n">measurement</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convenience wrapper that performs a *time‑update* immediately</span>
 <span class="sd">        followed by a *measurement‑update*.</span>
@@ -357,14 +358,14 @@
         <span class="k">return</span> <span class="n">updated_state</span></div>
 
 
-    <span class="c1"># ---------------------------------------------------------------------- #</span>
-    <span class="c1">#                       sequence processing (filter)                     #</span>
-    <span class="c1"># ---------------------------------------------------------------------- #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1">#                     sequence processing (filter)                   #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
 <div class="viewcode-block" id="ExtendedKalmanFilter.forward">
 <a class="viewcode-back" href="../../extended.html#kalman.extended.ExtendedKalmanFilter.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">observations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaussianState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the EKF over a sequence of observations.</span>
 
