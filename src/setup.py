@@ -10,7 +10,7 @@ def read(file_path):
 
 
 readme = read('README.rst')
-# вычищаем локальные версии из файла requirements (согласно PEP440)
+# strip local versions from requirements file (per PEP440)
 requirements = '\n'.join(
     re.findall(r'^([^\s^+]+).*$',
                read('requirements.txt'),
@@ -23,7 +23,7 @@ setup(
     version=__version__,
     license='MIT',
     author='Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk',
-    author_email="kreinin.mv@phystech.edu, nikitina.mariia@phystech.edu, babkin.pk@phystech.eduб vozniuk.ae@phystech.edu",
+    author_email="kreinin.mv@phystech.edu, nikitina.mariia@phystech.edu, babkin.pk@phystech.edu, vozniuk.ae@phystech.edu",
     description='Kalman filter and his friends',
     long_description=readme,
     url='https://github.com/intsystems/Kalman-filter-and-his-friends',

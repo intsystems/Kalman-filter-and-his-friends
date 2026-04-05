@@ -100,7 +100,7 @@ def test_predict_update_linear_system():
     Q = torch.eye(state_dim) * 0.1
     R = torch.eye(obs_dim) * 0.5
     
-    # Создаем EKF без явных Jacobian-функций
+    # Create EKF without explicit Jacobian functions
     ekf = ExtendedKalmanFilter(
         state_dim=state_dim,
         obs_dim=obs_dim,
@@ -130,7 +130,7 @@ def test_predict_update_linear_system():
     updated_state = ekf.update(predicted_state, measurement)
     
     # Expected update
-    H = H_matrix  # Используем постоянную матрицу H
+    H = H_matrix  # Use the constant H matrix
     y = measurement - h(predicted_state.mean)
     S = H @ predicted_state.covariance @ H.T + R
     K = predicted_state.covariance @ H.T @ torch.linalg.inv(S)
@@ -157,7 +157,7 @@ def test_predict_update_nonlinear_system():
     Q = torch.eye(state_dim) * 0.01
     R = torch.eye(obs_dim) * 0.1
     
-    # Создаем EKF без явных Jacobian-функций
+    # Create EKF without explicit Jacobian functions
     ekf = ExtendedKalmanFilter(
         state_dim=state_dim,
         obs_dim=obs_dim,
@@ -175,9 +175,9 @@ def test_predict_update_nonlinear_system():
     # Test predict step
     predicted_state = ekf.predict(state)
     
-    # Expected prediction (вычисляем якобиан аналитически для проверки)
+    # Expected prediction (compute Jacobian analytically for verification)
     expected_mean = f(init_mean)
-    F = (1 + 0.1 * torch.cos(init_mean)).reshape(1, 1)  # Аналитический якобиан
+    F = (1 + 0.1 * torch.cos(init_mean)).reshape(1, 1)  # Analytical Jacobian
     expected_cov = F @ init_cov @ F.T + Q
     
     assert torch.allclose(predicted_state.mean, expected_mean, atol=1e-5)
@@ -187,8 +187,8 @@ def test_predict_update_nonlinear_system():
     measurement = torch.tensor([1.1])
     updated_state = ekf.update(predicted_state, measurement)
     
-    # Expected update (вычисляем якобиан аналитически для проверки)
-    H = (2 * predicted_state.mean).reshape(1, 1)  # Аналитический якобиан
+    # Expected update (compute Jacobian analytically for verification)
+    H = (2 * predicted_state.mean).reshape(1, 1)  # Analytical Jacobian
     y = measurement - h(predicted_state.mean)
     S = H @ predicted_state.covariance @ H.T + R
     K = predicted_state.covariance @ H.T @ torch.linalg.inv(S)

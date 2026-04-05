@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.mypy_cache
 *.pytest_cache
+tasks/
 
 # Distribution / packaging
 .Python
@@ -45,6 +46,15 @@ logs/
 *.log
 *.xml
 
+
+# Data files
+data/
+notebooks/data/
+*.h5
+*.hdf5
+*.csv
+*.npy
+*.npz
 
 # Operating system files
 .DS_Store

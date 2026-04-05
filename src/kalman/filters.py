@@ -8,6 +8,21 @@ from typing import Optional
 from kalman.gaussian import GaussianState
 
 
+class SPDParameter(nn.Module):
+    """
+    Symmetric Positive Definite matrix parameterized via Cholesky factor.
+    Stores a lower-triangular L such that the matrix is L @ L^T.
+    This guarantees the output is always SPD during optimization.
+    """
+    def __init__(self, init_matrix: torch.Tensor):
+        super().__init__()
+        L = torch.linalg.cholesky(init_matrix)
+        self._L = nn.Parameter(L)
+
+    def forward(self) -> torch.Tensor:
+        return self._L @ self._L.mT
+
+
 class BaseFilter(nn.Module):
     """
     Abstract base class for Kalman Filters
@@ -48,16 +63,16 @@ class BaseFilter(nn.Module):
         """
         Single-step predict.
         Returns:
-            GaussianStateю
+            GaussianState
         """
         m, P = self.predict_(state.mean, state.covariance)
         return GaussianState(m, P)
-    
+
     def update(self, state: GaussianState, measurement: torch.Tensor) -> GaussianState:
         """
         Single-step update.
         Returns:
-            GaussianStateю
+            GaussianState
         """
         m, P = self.update_(state.mean, state.covariance, measurement)
         return GaussianState(m, P)
@@ -72,8 +87,8 @@ class BaseFilter(nn.Module):
         Returns: 
             updated_state_mean, updated_state_cov
         """
-        predicted_state = self.update(state)
-        updated_state = self.predict(predicted_state, measurement)
+        predicted_state = self.predict(state)
+        updated_state = self.update(predicted_state, measurement)
         return updated_state
 
     def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -99,16 +114,24 @@ class KalmanFilter(BaseFilter):
         measurement_noise (torch.Tensor): Uncertainty on the measure (R)
             Shape: (*, obs_dim, obs_dim)
     """
-    def __init__(self, 
+    def __init__(self,
                  process_matrix: torch.Tensor,
                  measurement_matrix: torch.Tensor,
                  process_noise: torch.Tensor,
                  measurement_noise: torch.Tensor):
-        super().__init__(process_matrix.shape[-1], measurement_matrix.shape[-1])
-        self.process_matrix = process_matrix
-        self.measurement_matrix = measurement_matrix
-        self.process_noise = process_noise
-        self.measurement_noise = measurement_noise
+        super().__init__(process_matrix.shape[-1], measurement_matrix.shape[-2])
+        self.process_matrix = nn.Parameter(process_matrix.clone())
+        self.measurement_matrix = nn.Parameter(measurement_matrix.clone())
+        self._process_noise = SPDParameter(process_noise)
+        self._measurement_noise = SPDParameter(measurement_noise)
+
+    @property
+    def process_noise(self) -> torch.Tensor:
+        return self._process_noise()
+
+    @property
+    def measurement_noise(self) -> torch.Tensor:
+        return self._measurement_noise()
         
     def predict(self,
         state: GaussianState,

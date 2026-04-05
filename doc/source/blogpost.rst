@@ -151,33 +151,38 @@ Our Framework
 
 We provide a clean, minimalistic, and extensible implementation of different Kalman filter variants:
 
-- Standard Kalman Filter – The foundational model for linear state estimation.
-- Extended Kalman Filter (EKF) – Handling nonlinear dynamics through local linearization.
-- Unscented Kalman Filter (UKF) – A more accurate approach using sigma-point sampling.
-- Variational Kalman Filters – Leveraging modern probabilistic techniques for scalable inference.
+- **Kalman Filter** — linear state estimation
+- **Extended Kalman Filter (EKF)** — first-order Taylor linearization
+- **Unscented Kalman Filter (UKF)** — sigma-point sampling
+- **Variational Bayesian Kalman Filter (VB-AKF)** — adaptive measurement noise estimation
+- **Deep Kalman Filter (DKF)** — sequential VAE with neural transition and emission models
 
 After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.
 
 .. code-block:: python
 
-    import numpy as np
+    import torch
     from kalman.filters import KalmanFilter
+    from kalman.gaussian import GaussianState
 
-    # Example: 1D constant position model
-    A = np.array([[1]])      # State transition matrix (position stays the same)
-    H = np.array([[1]])      # Observation matrix (we observe the position directly)
-    Q = np.array([[0.01]])   # Process noise covariance
-    R = np.array([[1]])      # Observation noise covariance
-    x0 = np.array([[0]])     # Initial state estimate 
-    P0 = np.array([[1]])     # Initial covariance estimate
+    # 1D constant position model
+    kf = KalmanFilter(
+        process_matrix=torch.eye(1),           # state stays the same
+        measurement_matrix=torch.eye(1),       # we observe the state directly
+        process_noise=0.01 * torch.eye(1),     # small process noise
+        measurement_noise=torch.eye(1),        # observation noise
+    )
 
-    kf = KalmanFilter(A, H, Q, R, x0, P0)
+    state = GaussianState(
+        mean=torch.zeros(1),
+        covariance=torch.eye(1),
+    )
 
     # Simulated noisy measurements
     measurements = [1.2, 0.9, 1.0, 1.1, 0.95]
 
     for z in measurements:
-        kf.predict()
-        kf.update(np.array([[z]]))
-        print("Current state estimate:", kf.x.flatten()[0])
+        state = kf.predict(state)
+        state = kf.update(state, torch.tensor([z]))
+        print("State estimate:", state.mean.item())
 

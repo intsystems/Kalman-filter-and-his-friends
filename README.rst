@@ -1,16 +1,17 @@
-.. image:: images/kalman.png
-   :width: 80%
+.. image:: images/kalman-filter-banner.svg
+   :width: 100%
    :align: center
+   :alt: Kalman Filter and Extensions
 
 Kalman Filter and Extensions
--------------------------
+============================
 
 **Authors**: Matvei Kreinin, Maria Nikitina, Petr Babkin, Anastasia Voznyuk
 
 **Consultant**: Oleg Bakhteev, PhD
 
-💡 Description
---------------
+Description
+-----------
 
 This project focuses on implementing Kalman Filters and their extensions
 in a simple and clear manner. Despite their importance, these
@@ -18,68 +19,69 @@ state-space models remain underrepresented in the deep learning
 community. Our goal is to create a well-documented and efficient
 implementation that aligns with existing structured state-space models.
 
-📌 Algorithms Implemented
--------------------------
+Algorithms Implemented
+----------------------
 
-We plan to implement the following distributions in our library:
+- **Kalman Filter** — linear state estimation
+- **Extended Kalman Filter (EKF)** — first-order Taylor linearization
+- **Unscented Kalman Filter (UKF)** — sigma-point sampling
+- **Variational Bayesian Kalman Filter (VB-AKF)** — adaptive measurement noise estimation
+- **Deep Kalman Filter (DKF)** — sequential VAE with neural transition and emission models
 
-- `Kalman Filter`
-- `Extended Kalman Filter (EKF)`
-- `Unscented Kalman Filter (UKF)`
-- `Variational Kalman Filters`
+Related Work
+------------
 
-🔗 Related Work
----------------
+- `PyTorch implementation of Kalman Filters <https://github.com/raphaelreme/torch-kf>`__
+- `Extended Kalman Filter implementation in Pyro <https://pyro.ai/examples/ekf.html>`__
+- Compatibility considerations with `S4 and other SSM models <https://github.com/state-spaces/s4>`__
 
--  `PyTorch implementation of Kalman
-   Filters <https://github.com/raphaelreme/torch-kf?tab=readme-ov-file>`__
--  `Extended Kalman Filter implementation in
-   Pyro <https://pyro.ai/examples/ekf.html>`__
--  Compatibility considerations with `S4 and other SSM state-of-the-art
-   models <https://github.com/state-spaces/s4>`__
+Tech Stack
+----------
 
-📚 Tech Stack
--------------
+- **Python**
+- **PyTorch** for tensor computation and automatic differentiation
+- **NumPy** for numerical computations
+- **SciPy** for advanced mathematical functions
+- **Jupyter Notebooks** for experimentation and visualization
 
-The project is implemented using:
+Quick Start
+-----------
 
--  **Python**
--  **PyTorch** for tensor computation and differentiation
--  **NumPy** for numerical computations
--  **SciPy** for advanced mathematical functions
--  **Jupyter Notebooks** for experimentation and visualization
-
-👨‍💻 Usage
---------
-
-Basic usage examples for different filters will be provided. Below is an
-example of using a Kalman Filter in PyTorch:
-
-.. code:: python
+.. code-block:: python
 
    import torch
-   from kalman_filter import KalmanFilter
+   from kalman.filters import KalmanFilter
 
-   kf = KalmanFilter(dim_x=4, dim_z=2)
-   kf.predict()
-   kf.update(torch.tensor([1.0, 2.0]))
-   print(kf.x)  # Updated state estimate
+   state_dim, obs_dim = 2, 1
+   kf = KalmanFilter(
+       transition_matrix=torch.eye(state_dim),
+       measurement_matrix=torch.ones(obs_dim, state_dim),
+       process_noise=0.01 * torch.eye(state_dim),
+       measurement_noise=torch.eye(obs_dim),
+       state_dim=state_dim,
+       obs_dim=obs_dim,
+   )
 
-More detailed examples and tutorials will be available in the
-documentation.
+   state = kf.init_state()
+   measurements = torch.randn(10, obs_dim)
 
-📬 Links
---------
+   for z in measurements:
+       state = kf.predict(state)
+       state = kf.update(state, z)
+       print("State estimate:", state.mean)
 
--  `Project Documentation <./docs/plan.md>`__
+More examples are available in the ``notebooks`` folder.
 
--  `Project Plan <...>`__
+Links
+-----
 
--  .. rubric:: `Matvei Kreinin <https://github.com/kreininmv>`__, `Maria
-      Nikitina <https://github.com/NikitinaMaria>`__, `Petr
-      Babkin <https://github.com/petr-parker>`__, `Anastasia
-      Voznyuk <https://github.com/natriistorm>`__
-      :name: matvei-kreinin-maria-nikitina-petr-babkin-anastasia-voznyuk
+- `Library Documentation <https://intsystems.github.io/Kalman-filter-and-his-friends/>`__
+- `Blogpost <https://www.overleaf.com/read/qyvhbszcygjn#4ff3b8>`__
 
-Feel free to modify and expand this README as needed to fit your
-project’s specific goals and implementation details!
+Authors
+-------
+
+- `Matvei Kreinin <https://github.com/kreininmv>`__
+- `Maria Nikitina <https://github.com/NikitinaMaria>`__
+- `Petr Babkin <https://github.com/petr-parker>`__
+- `Anastasia Voznyuk <https://github.com/natriistorm>`__

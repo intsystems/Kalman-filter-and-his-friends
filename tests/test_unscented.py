@@ -49,8 +49,8 @@ def test_sigma_points_generation():
     
     assert sigma_points.shape == (2*state_dim + 1, state_dim)
     assert torch.allclose(sigma_points[0], mean)
-    assert sigma_points[1,0] > mean[0]  # positive perturbation
-    assert sigma_points[2,0] < mean[0]  # negative perturbation
+    assert sigma_points[1,0] > mean[0]  # positive perturbation dim 0
+    assert sigma_points[state_dim + 1, 0] < mean[0]  # negative perturbation dim 0
 
 # def test_unscented_transform():
 #     state_dim = 2

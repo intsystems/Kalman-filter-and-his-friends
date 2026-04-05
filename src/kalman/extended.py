@@ -2,7 +2,7 @@
 import torch
 from torch import nn
 from typing import Callable, Optional, Tuple
-from kalman.filters import BaseFilter
+from kalman.filters import BaseFilter, SPDParameter
 from kalman.gaussian import GaussianState
 
 class ExtendedKalmanFilter(BaseFilter):
@@ -71,18 +71,29 @@ class ExtendedKalmanFilter(BaseFilter):
         eye_x = torch.eye(state_dim)
         eye_z = torch.eye(obs_dim)
 
-        self.register_buffer("Q", eye_x if Q is None else Q)
-        self.register_buffer("R", eye_z if R is None else R)
+        self._Q_spd = SPDParameter(eye_x.clone() if Q is None else Q.clone())
+        self._R_spd = SPDParameter(eye_z.clone() if R is None else R.clone())
 
         # Initial posterior (after update of “time 0 – 1”).
-        self.register_buffer(
-            "_init_mean",
-            torch.zeros(state_dim) if init_mean is None else init_mean.clone(),
+        self._init_mean = nn.Parameter(
+            torch.zeros(state_dim) if init_mean is None else init_mean.clone()
         )
-        self.register_buffer(
-            "_init_cov",
-            eye_x if init_cov is None else init_cov.clone(),
+        self._init_cov_spd = SPDParameter(
+            eye_x.clone() if init_cov is None else init_cov.clone()
         )
+
+
+    @property
+    def Q(self) -> torch.Tensor:
+        return self._Q_spd()
+
+    @property
+    def R(self) -> torch.Tensor:
+        return self._R_spd()
+
+    @property
+    def _init_cov(self) -> torch.Tensor:
+        return self._init_cov_spd()
 
     # ---------------------------------------------------------------------- #
     #                               helpers                                   #
@@ -257,21 +268,20 @@ class ExtendedKalmanFilter(BaseFilter):
             Covs  shape (T, B, state_dim, state_dim)
         """
         T, B = observations.shape[:2]
-        device = observations.device
 
-        self._init_mean = self._init_mean.to(observations.device)
-        self._init_cov = self._init_cov.to(observations.device)
+        mean = self._init_mean.to(observations.device)
+        cov = self._init_cov.to(observations.device)
 
         means = []
         covs = []
 
         for t in range(T):
             if t > 0:
-                self._init_mean, self._init_cov = self.predict_(self._init_mean, self._init_cov)
-            self._init_mean, self._init_cov = self.update_(self._init_mean, self._init_cov, observations[t])
+                mean, cov = self.predict_(mean, cov)
+            mean, cov = self.update_(mean, cov, observations[t])
 
-            means.append(self._init_mean)
-            covs.append(self._init_cov)
+            means.append(mean)
+            covs.append(cov)
 
         all_means = torch.stack(means, dim=0)  # (T, B, state_dim)
         all_covs = torch.stack(covs, dim=0)    # (T, B, state_dim, state_dim)

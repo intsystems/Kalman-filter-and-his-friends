@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">  
-    <img src="doc/source/images/kalman.webp" width="500px" />
+    <img src="doc/source/images/kalman-filter-banner.svg" width="700px" />
 </div>
 
 <p align="center">
@@ -37,11 +37,11 @@ This project focuses on implementing Kalman Filters and their extensions in a si
 
 ## 📌 Algorithms Implemented
 
-We plan to implement the following distributions in our library:
-- [x] **Kalman Filter**
-- [x] **Extended Kalman Filter (EKF)**
-- [x] **Unscented Kalman Filter (UKF)**
-- [x] **Variational Kalman Filters**
+- [x] **Kalman Filter** — linear state estimation
+- [x] **Extended Kalman Filter (EKF)** — first-order Taylor linearization
+- [x] **Unscented Kalman Filter (UKF)** — sigma-point sampling
+- [x] **Variational Bayesian Kalman Filter (VB-AKF)** — adaptive measurement noise estimation
+- [x] **Deep Kalman Filter (DKF)** — sequential VAE with neural transition and emission models
 
 ## 🔗 Related Work
 
@@ -74,13 +74,13 @@ You can install the required packages using pip:
 
 ## 👨‍💻 Usage
 
-Basic usage examples for different filters will be can be found in folder `notebooks`
+Basic usage examples for different filters can be found in the `notebooks` folder.
 
 ## ✅ Testing
 
-To run test, after intalling the pacakge, the following comman must be executed from the project root.
+To run the tests after installing the package, execute the following command from the project root:
 ```bash
-PYTHONPATH="${PYTHONPATH}:src" pytest tests/test_filters.py -v
+PYTHONPATH="${PYTHONPATH}:src" pytest tests/ -v
 ```
 
 ## 📬 Links
