@@ -2,7 +2,15 @@ import io
 import re
 from setuptools import setup, find_packages
 
-from kalman import __version__
+# Read version without importing the package (which requires torch)
+def get_version():
+    with open('kalman/__init__.py', 'r') as f:
+        for line in f:
+            if line.startswith('__version__'):
+                return line.split('=')[1].strip().strip('"').strip("'")
+    return '0.0.1'
+
+__version__ = get_version()
 
 def read(file_path):
     with io.open(file_path, 'r', encoding='utf-8') as f:
