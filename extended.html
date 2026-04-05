@@ -8,20 +8,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Extended Kalman Filter &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Unscented Kalman Filter" href="unscented.html" />
-    <link rel="prev" title="Filters" href="filters.html" /> 
+    <link rel="prev" title="Kalman Filter" href="filters.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,17 +43,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="info.html">Kalman Filter and Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#description">💡 Description</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#related-work">🔗 Related Work</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#tech-stack">📚 Tech Stack</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#usage">👨‍💻 Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#links">📬 Links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html">Why Should DL Researchers Care about Kalman Filters?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#theoretical-background">Theoretical Background</a></li>
@@ -62,15 +56,19 @@
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#non-linear-kalman-filters">Non-Linear Kalman Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#our-framework">Our Framework</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#basic-usage">Basic Usage</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian State</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Kalman Filter</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extended Kalman Filter</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#kalman.extended.ExtendedKalmanFilter"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.extended.ExtendedKalmanFilter.Q"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter.Q</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.extended.ExtendedKalmanFilter.R"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter.R</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.extended.ExtendedKalmanFilter.forward"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter.forward()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.extended.ExtendedKalmanFilter.predict"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter.predict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.extended.ExtendedKalmanFilter.predict_"><code class="docutils literal notranslate"><span class="pre">ExtendedKalmanFilter.predict_()</span></code></a></li>
@@ -82,9 +80,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="unscented.html">Unscented Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Bayesian Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dkf.html">Deep Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
 </ul>
 
         </div>
@@ -103,7 +100,7 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Extended Kalman Filter</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/extended.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/intsystems/Kalman-filter-and-his-friends/blob/main./doc/source/extended.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -111,12 +108,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-kalman.extended">
-<span id="extended-kalman-filter"></span><h1>Extended Kalman Filter<a class="headerlink" href="#module-kalman.extended" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="extended-kalman-filter">
+<h1>Extended Kalman Filter<a class="headerlink" href="#extended-kalman-filter" title="Link to this heading"></a></h1>
+<p>EKF handles nonlinear dynamics by linearizing the transition and measurement functions
+via first-order Taylor expansion (Jacobians). Supports automatic Jacobian computation
+through PyTorch autograd.</p>
+<dl class="py class" id="module-kalman.extended">
 <dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.extended.</span></span><span class="sig-name descname"><span class="pre">ExtendedKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter" title="Link to this definition"></a></dt>
-<dd><p>Generic Extended Kalman Filter.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.extended.</span></span><span class="sig-name descname"><span class="pre">ExtendedKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F_jacobian</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H_jacobian</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#kalman.filters.BaseFilter" title="kalman.filters.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Generic Extended Kalman Filter.</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
 <dl class="simple">
@@ -153,9 +154,19 @@ If None, identity.</p>
 <dt>eps<span class="classifier">float</span></dt><dd><p>Jitter added to diagonals for numerical stability.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.Q">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Q</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tensor</span></em><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.Q" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.R">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">R</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tensor</span></em><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.R" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.forward" title="Link to this definition"></a></dt>
 <dd><p>Run the EKF over a sequence of observations.</p>
 <section id="id5">
 <h3>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
@@ -187,7 +198,7 @@ Covs  shape (T, B, state_dim, state_dim)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.predict_">
-<span class="sig-name descname"><span class="pre">predict_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.predict_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.predict_" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">predict_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.predict_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.predict_" title="Link to this definition"></a></dt>
 <dd><p>EKF time‑update (prediction) step.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p>Predicted state</p>
@@ -197,7 +208,7 @@ Covs  shape (T, B, state_dim, state_dim)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.predict_update">
-<span class="sig-name descname"><span class="pre">predict_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.predict_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.predict_update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">predict_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.predict_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.predict_update" title="Link to this definition"></a></dt>
 <dd><p>Convenience wrapper that performs a <em>time‑update</em> immediately
 followed by a <em>measurement‑update</em>.</p>
 <section id="id6">
@@ -216,13 +227,13 @@ measurement : torch.Tensor</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.update" title="Link to this definition"></a></dt>
 <dd><p>EKF measurement‑update (correction) step.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.extended.ExtendedKalmanFilter.update_">
-<span class="sig-name descname"><span class="pre">update_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.update_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.update_" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/extended.html#ExtendedKalmanFilter.update_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.extended.ExtendedKalmanFilter.update_" title="Link to this definition"></a></dt>
 <dd><p>EKF measurement‑update (correction) step.</p>
 </dd></dl>
 
@@ -235,7 +246,7 @@ measurement : torch.Tensor</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="filters.html" class="btn btn-neutral float-left" title="Filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="filters.html" class="btn btn-neutral float-left" title="Kalman Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="unscented.html" class="btn btn-neutral float-right" title="Unscented Kalman Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

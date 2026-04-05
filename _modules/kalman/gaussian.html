@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kalman.gaussian &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -40,17 +40,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../info.html">Kalman Filter and Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../info.html#description">💡 Description</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../info.html#related-work">🔗 Related Work</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../info.html#tech-stack">📚 Tech Stack</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../info.html#usage">👨‍💻 Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../info.html#links">📬 Links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../blogpost.html">Why Should DL Researchers Care about Kalman Filters?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#theoretical-background">Theoretical Background</a></li>
@@ -59,18 +53,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#non-linear-kalman-filters">Non-Linear Kalman Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../blogpost.html#our-framework">Our Framework</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html#basic-usage">Basic Usage</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian.html">Gaussian State</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../filters.html">Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../extended.html">Extended Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../unscented.html">Unscented Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../vkf.html">Variational Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vkf.html">Variational Bayesian Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dkf.html">Deep Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../gaussian.html">Gaussian</a></li>
 </ul>
 
         </div>
@@ -102,7 +97,6 @@
 <span class="c1"># https://github.com/raphaelreme/torch-kf/blob/main/torch_kf/kalman_filter.py</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span>
 
 
@@ -125,7 +119,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">covariance</span> <span class="o">=</span> <span class="n">covariance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span>
-    
+
 <div class="viewcode-block" id="GaussianState.clone">
 <a class="viewcode-back" href="../../gaussian.html#kalman.gaussian.GaussianState.clone">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GaussianState&quot;</span><span class="p">:</span>

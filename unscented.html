@@ -8,19 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unscented Kalman Filter &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Variational Kalman Filter" href="vkf.html" />
+    <link rel="next" title="Variational Bayesian Kalman Filter" href="vkf.html" />
     <link rel="prev" title="Extended Kalman Filter" href="extended.html" /> 
 </head>
 
@@ -43,17 +43,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="info.html">Kalman Filter and Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#description">💡 Description</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#related-work">🔗 Related Work</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#tech-stack">📚 Tech Stack</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#usage">👨‍💻 Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#links">📬 Links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html">Why Should DL Researchers Care about Kalman Filters?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#theoretical-background">Theoretical Background</a></li>
@@ -62,16 +56,20 @@
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#non-linear-kalman-filters">Non-Linear Kalman Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#our-framework">Our Framework</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#basic-usage">Basic Usage</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian State</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extended.html">Extended Kalman Filter</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Unscented Kalman Filter</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#kalman.unscented.UnscentedKalmanFilter"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.unscented.UnscentedKalmanFilter.Q"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter.Q</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.unscented.UnscentedKalmanFilter.R"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter.R</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.unscented.UnscentedKalmanFilter.forward"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter.forward()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.unscented.UnscentedKalmanFilter.predict"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter.predict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.unscented.UnscentedKalmanFilter.predict_"><code class="docutils literal notranslate"><span class="pre">UnscentedKalmanFilter.predict_()</span></code></a></li>
@@ -82,9 +80,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Bayesian Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dkf.html">Deep Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
 </ul>
 
         </div>
@@ -103,7 +100,7 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Unscented Kalman Filter</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/unscented.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/intsystems/Kalman-filter-and-his-friends/blob/main./doc/source/unscented.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -111,34 +108,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-kalman.unscented">
-<span id="unscented-kalman-filter"></span><h1>Unscented Kalman Filter<a class="headerlink" href="#module-kalman.unscented" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="unscented-kalman-filter">
+<h1>Unscented Kalman Filter<a class="headerlink" href="#unscented-kalman-filter" title="Link to this heading"></a></h1>
+<p>UKF avoids computing Jacobians by propagating deterministically chosen sigma points
+through the nonlinear functions, then recovering the mean and covariance from the
+transformed points.</p>
+<dl class="py class" id="module-kalman.unscented">
 <dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.unscented.</span></span><span class="sig-name descname"><span class="pre">UnscentedKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter" title="Link to this definition"></a></dt>
-<dd><p>Scaled–sigma‑point Unscented Kalman Filter.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.unscented.</span></span><span class="sig-name descname"><span class="pre">UnscentedKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-07</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#kalman.filters.BaseFilter" title="kalman.filters.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Scaled-sigma-point Unscented Kalman Filter.</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
 <dl class="simple">
 <dt>state_dim, obs_dim<span class="classifier">int</span></dt><dd><p>Dimensions <em>n</em> and <em>m</em>.</p>
 </dd>
-<dt>f, h<span class="classifier">Callable[[torch.Tensor], torch.Tensor]</span></dt><dd><p>Process / measurement models that expect sigma‑points of shape
-<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">2n</span> <span class="pre">+</span> <span class="pre">1,</span> <span class="pre">n)</span></code> and return the propagated sigma‑points
-with the same shape.</p>
+<dt>f, h<span class="classifier">Callable[[torch.Tensor], torch.Tensor]</span></dt><dd><p>Process / measurement models that expect input of shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">n)</span></code> and return output of the same leading shape.</p>
 </dd>
 <dt>alpha, beta, kappa<span class="classifier">float</span></dt><dd><p>Standard UKF scaling parameters.</p>
 </dd>
-<dt>Q, R<span class="classifier">torch.Tensor, optional</span></dt><dd><p>Process‑ and measurement‑noise covariances.</p>
+<dt>Q, R<span class="classifier">torch.Tensor, optional</span></dt><dd><p>Process- and measurement-noise covariances.</p>
 </dd>
 <dt>init_mean, init_cov<span class="classifier">torch.Tensor, optional</span></dt><dd><p>Initial posterior (after a fictitious step 0 update).</p>
 </dd>
-<dt>eps<span class="classifier">float</span></dt><dd><p>Jitter added to all Cholesky factorizations and post‑update
-covariances for numerical stability.</p>
+<dt>eps<span class="classifier">float</span></dt><dd><p>Jitter added to Cholesky factorizations for numerical stability.</p>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.Q">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Q</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tensor</span></em><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.Q" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.R">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">R</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tensor</span></em><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.R" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.forward" title="Link to this definition"></a></dt>
 <dd><p>Run the UKF over a sequence of observations.</p>
 <section id="id1">
 <h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
@@ -149,7 +158,7 @@ covariances for numerical stability.</p>
 </section>
 <section id="returns">
 <h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
-<p>all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory</p>
+<p>GaussianState with means (T, B, state_dim) and covs (T, B, state_dim, state_dim)</p>
 </section>
 </dd></dl>
 
@@ -159,23 +168,21 @@ covariances for numerical stability.</p>
 <dd><p>Single-step predict.
 Returns:</p>
 <blockquote>
-<div><p>GaussianStateю</p>
+<div><p>GaussianState</p>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.predict_">
-<span class="sig-name descname"><span class="pre">predict_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.predict_" title="Link to this definition"></a></dt>
-<dd><p>Internal function for single-step predict.
-Returns:</p>
-<blockquote>
-<div><p>predicted_state_mean, predicted_state_cov</p>
-</div></blockquote>
+<span class="sig-name descname"><span class="pre">predict_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.predict_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.predict_" title="Link to this definition"></a></dt>
+<dd><p>UKF prediction step.
+Generates sigma points, propagates through f, computes predicted mean and cov.
+Stores propagated sigma points for reuse in <a href="#id2"><span class="problematic" id="id3">update_</span></a>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.predict_update">
-<span class="sig-name descname"><span class="pre">predict_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.predict_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.predict_update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">predict_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.predict_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.predict_update" title="Link to this definition"></a></dt>
 <dd><p>Single-step predict and update in one function.
 Returns:</p>
 <blockquote>
@@ -185,22 +192,20 @@ Returns:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.update" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.update" title="Link to this definition"></a></dt>
 <dd><p>Single-step update.
 Returns:</p>
 <blockquote>
-<div><p>GaussianStateю</p>
+<div><p>GaussianState</p>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.unscented.UnscentedKalmanFilter.update_">
-<span class="sig-name descname"><span class="pre">update_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.update_" title="Link to this definition"></a></dt>
-<dd><p>Internal single-step update.
-Returns:</p>
-<blockquote>
-<div><p>updated_state_mean, updated_state_cov</p>
-</div></blockquote>
+<span class="sig-name descname"><span class="pre">update_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/unscented.html#UnscentedKalmanFilter.update_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.unscented.UnscentedKalmanFilter.update_" title="Link to this definition"></a></dt>
+<dd><p>UKF update step.
+If <a href="#id4"><span class="problematic" id="id5">predict_</span></a> was called beforehand, reuses the propagated sigma points (sigmas_f).
+Otherwise, generates fresh sigma points from the current state.</p>
 </dd></dl>
 
 </section>
@@ -213,7 +218,7 @@ Returns:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="extended.html" class="btn btn-neutral float-left" title="Extended Kalman Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="vkf.html" class="btn btn-neutral float-right" title="Variational Kalman Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="vkf.html" class="btn btn-neutral float-right" title="Variational Bayesian Kalman Filter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

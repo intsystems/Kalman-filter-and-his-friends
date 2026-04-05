@@ -8,14 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Why Should DL Researchers Care about Kalman Filters? &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -44,17 +44,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="info.html">Kalman Filter and Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#description">💡 Description</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#related-work">🔗 Related Work</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#tech-stack">📚 Tech Stack</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#usage">👨‍💻 Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#links">📬 Links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Why Should DL Researchers Care about Kalman Filters?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#theoretical-background">Theoretical Background</a></li>
@@ -67,18 +61,19 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#our-framework">Our Framework</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#basic-usage">Basic Usage</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian State</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extended.html">Extended Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unscented.html">Unscented Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Kalman Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vkf.html">Variational Bayesian Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dkf.html">Deep Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
 </ul>
 
         </div>
@@ -97,7 +92,7 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Why Should DL Researchers Care about Kalman Filters?</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/blogpost.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/intsystems/Kalman-filter-and-his-friends/blob/main./doc/source/blogpost.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -215,32 +210,37 @@ Kalman filters serve as the backbone for many advanced models, including:</p>
 <h1>Our Framework<a class="headerlink" href="#our-framework" title="Link to this heading"></a></h1>
 <p>We provide a clean, minimalistic, and extensible implementation of different Kalman filter variants:</p>
 <ul class="simple">
-<li><p>Standard Kalman Filter – The foundational model for linear state estimation.</p></li>
-<li><p>Extended Kalman Filter (EKF) – Handling nonlinear dynamics through local linearization.</p></li>
-<li><p>Unscented Kalman Filter (UKF) – A more accurate approach using sigma-point sampling.</p></li>
-<li><p>Variational Kalman Filters – Leveraging modern probabilistic techniques for scalable inference.</p></li>
+<li><p><strong>Kalman Filter</strong> — linear state estimation</p></li>
+<li><p><strong>Extended Kalman Filter (EKF)</strong> — first-order Taylor linearization</p></li>
+<li><p><strong>Unscented Kalman Filter (UKF)</strong> — sigma-point sampling</p></li>
+<li><p><strong>Variational Bayesian Kalman Filter (VB-AKF)</strong> — adaptive measurement noise estimation</p></li>
+<li><p><strong>Deep Kalman Filter (DKF)</strong> — sequential VAE with neural transition and emission models</p></li>
 </ul>
 <p>After installing the package, you can quickly set up and run a Kalman filter with just a few lines of code.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kalman.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">KalmanFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kalman.gaussian</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianState</span>
 
-<span class="c1"># Example: 1D constant position model</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>      <span class="c1"># State transition matrix (position stays the same)</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>      <span class="c1"># Observation matrix (we observe the position directly)</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.01</span><span class="p">]])</span>   <span class="c1"># Process noise covariance</span>
-<span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>      <span class="c1"># Observation noise covariance</span>
-<span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">]])</span>     <span class="c1"># Initial state estimate</span>
-<span class="n">P0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>     <span class="c1"># Initial covariance estimate</span>
+<span class="c1"># 1D constant position model</span>
+<span class="n">kf</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">(</span>
+    <span class="n">process_matrix</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>           <span class="c1"># state stays the same</span>
+    <span class="n">measurement_matrix</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>       <span class="c1"># we observe the state directly</span>
+    <span class="n">process_noise</span><span class="o">=</span><span class="mf">0.01</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>     <span class="c1"># small process noise</span>
+    <span class="n">measurement_noise</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>        <span class="c1"># observation noise</span>
+<span class="p">)</span>
 
-<span class="n">kf</span> <span class="o">=</span> <span class="n">KalmanFilter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">GaussianState</span><span class="p">(</span>
+    <span class="n">mean</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">covariance</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">)</span>
 
 <span class="c1"># Simulated noisy measurements</span>
 <span class="n">measurements</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">measurements</span><span class="p">:</span>
-    <span class="n">kf</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
-    <span class="n">kf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">z</span><span class="p">]]))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current state estimate:&quot;</span><span class="p">,</span> <span class="n">kf</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">kf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">kf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">z</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State estimate:&quot;</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>

@@ -6,17 +6,18 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Variational Kalman Filter &mdash; Kalman filter and his friends  documentation</title>
+  <title>Variational Bayesian Kalman Filter &mdash; Kalman filter and his friends  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -43,17 +44,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Main Info:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="info.html">Kalman Filter and Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#description">💡 Description</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#algorithms-implemented">📌 Algorithms Implemented</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#related-work">🔗 Related Work</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#tech-stack">📚 Tech Stack</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#usage">👨‍💻 Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html#links">📬 Links</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Theoretical Background:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Theoretical Background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html">Why Should DL Researchers Care about Kalman Filters?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#theoretical-background">Theoretical Background</a></li>
@@ -62,27 +57,29 @@
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#non-linear-kalman-filters">Non-Linear Kalman Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="blogpost.html#our-framework">Our Framework</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Get Started:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#basic-usage">Basic Usage</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Packages:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian State</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extended.html">Extended Kalman Filter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="unscented.html">Unscented Kalman Filter</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Variational Kalman Filter</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Variational Bayesian Kalman Filter</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#kalman.vkf.VBKalmanFilter"><code class="docutils literal notranslate"><span class="pre">VBKalmanFilter</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.vkf.VBKalmanFilter.forward"><code class="docutils literal notranslate"><span class="pre">VBKalmanFilter.forward()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.vkf.VBKalmanFilter.get_measurement_covariance"><code class="docutils literal notranslate"><span class="pre">VBKalmanFilter.get_measurement_covariance()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.vkf.VBKalmanFilter.predict"><code class="docutils literal notranslate"><span class="pre">VBKalmanFilter.predict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kalman.vkf.VBKalmanFilter.process_noise"><code class="docutils literal notranslate"><span class="pre">VBKalmanFilter.process_noise</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kalman.vkf.VBKalmanFilter.update"><code class="docutils literal notranslate"><span class="pre">VBKalmanFilter.update()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dkf.html">Deep Kalman Filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian.html">Gaussian</a></li>
 </ul>
 
         </div>
@@ -99,9 +96,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Variational Kalman Filter</li>
+      <li class="breadcrumb-item active">Variational Bayesian Kalman Filter</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/Intelligent-Systems-Phystech/Kalman-filter-and-his-friends/blob/main./doc/source/vkf.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/intsystems/Kalman-filter-and-his-friends/blob/main./doc/source/vkf.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -109,34 +106,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-kalman.vkf">
-<span id="variational-kalman-filter"></span><h1>Variational Kalman Filter<a class="headerlink" href="#module-kalman.vkf" title="Link to this heading"></a></h1>
-<dl class="py class">
+  <section id="variational-bayesian-kalman-filter">
+<h1>Variational Bayesian Kalman Filter<a class="headerlink" href="#variational-bayesian-kalman-filter" title="Link to this heading"></a></h1>
+<p>VB-AKF adaptively estimates the measurement noise covariance <span class="math notranslate nohighlight">\(R\)</span> online
+using a variational Bayesian approach with an inverse-Wishart prior.
+Based on <a class="reference external" href="https://users.aalto.fi/~ssarkka/pub/mvb-akf-mlsp.pdf">Sarkka &amp; Nummenmaa (2009)</a>.</p>
+<dl class="py class" id="module-kalman.vkf">
 <dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.vkf.</span></span><span class="sig-name descname"><span class="pre">VBKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter" title="Link to this definition"></a></dt>
-<dd><p>Variational Bayesian Adaptive Kalman Filter (VB-AKF)</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kalman.vkf.</span></span><span class="sig-name descname"><span class="pre">VBKalmanFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_noise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_measurement_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#kalman.filters.BaseFilter" title="kalman.filters.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Variational Bayesian Adaptive Kalman Filter (VB-AKF).</p>
+<p>Adaptively estimates the measurement noise covariance R
+using a variational Bayesian approach with an inverse-Wishart prior.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.forward" title="Link to this definition"></a></dt>
-<dd><p>Process full sequence (T, B, obs_dim)</p>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.forward" title="Link to this definition"></a></dt>
+<dd><p>Processes an entire sequence of observations in shape (T, B, obs_dim).
+Returns
+——-
+all_states, all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter.get_measurement_covariance">
-<span class="sig-name descname"><span class="pre">get_measurement_covariance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.get_measurement_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.get_measurement_covariance" title="Link to this definition"></a></dt>
-<dd><p>Returns current estimate of measurement covariance</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">get_measurement_covariance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.get_measurement_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.get_measurement_covariance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.predict" title="Link to this definition"></a></dt>
-<dd><p>Prediction step with covariance dynamics</p>
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.predict" title="Link to this definition"></a></dt>
+<dd><p>Prediction step with Wishart parameter dynamics.</p>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter.process_noise">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_noise</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tensor</span></em><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.process_noise" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kalman.vkf.VBKalmanFilter.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.update" title="Link to this definition"></a></dt>
-<dd><p>Iterative variational update step</p>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="gaussian.html#kalman.gaussian.GaussianState" title="kalman.gaussian.GaussianState"><span class="pre">GaussianState</span></a></span></span><a class="reference internal" href="_modules/kalman/vkf.html#VBKalmanFilter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kalman.vkf.VBKalmanFilter.update" title="Link to this definition"></a></dt>
+<dd><p>Iterative variational update step.</p>
 </dd></dl>
 
 </dd></dl>
