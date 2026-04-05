@@ -1,8 +1,10 @@
-# https://users.aalto.fi/~ssarkka/pub/mvb-akf-mlsp.pdf
+# Based on: https://users.aalto.fi/~ssarkka/pub/mvb-akf-mlsp.pdf
 
 from typing import Optional, Tuple
+
 import torch
 from torch import nn
+
 from kalman.gaussian import GaussianState
 from kalman.filters import BaseFilter, SPDParameter
 

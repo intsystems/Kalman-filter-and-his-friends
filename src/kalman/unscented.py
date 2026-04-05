@@ -1,4 +1,3 @@
-# kalman/unscented.py
 from typing import Callable, Tuple, Optional
 
 import torch
@@ -84,7 +83,6 @@ class UnscentedKalmanFilter(BaseFilter):
         # Cache for sigma points propagated through f (set by predict_, used by update_)
         self._sigmas_f: Optional[torch.Tensor] = None
 
-
     @property
     def Q(self) -> torch.Tensor:
         return self._Q_spd()
@@ -97,7 +95,9 @@ class UnscentedKalmanFilter(BaseFilter):
     def _init_cov(self) -> torch.Tensor:
         return self._init_cov_spd()
 
-    # ------------------------------------------------ sigma-points
+    # ------------------------------------------------------------------ #
+    #                          sigma points                              #
+    # ------------------------------------------------------------------ #
     def _sigma_points(self, mean: torch.Tensor, cov: torch.Tensor) -> torch.Tensor:
         """
         Generate 2n+1 sigma points.
@@ -122,7 +122,9 @@ class UnscentedKalmanFilter(BaseFilter):
             sigma.append(mean - scaled[..., :, i])
         return torch.stack(sigma, dim=-2)  # (..., 2n+1, n)
 
-    # ------------------------------------------------ unscented transform
+    # ------------------------------------------------------------------ #
+    #                       unscented transform                          #
+    # ------------------------------------------------------------------ #
     def _unscented_transform(
         self,
         sigma: torch.Tensor,
@@ -150,8 +152,10 @@ class UnscentedKalmanFilter(BaseFilter):
         y_cov = y_cov + noise_cov
         return y_mean, y_cov, y_sigma
 
-    # ------------------------------------------------ predict / update
-    def predict_(self, state_mean: torch.Tensor, state_cov: torch.Tensor):
+    # ------------------------------------------------------------------ #
+    #                        predict / update                            #
+    # ------------------------------------------------------------------ #
+    def predict_(self, state_mean: torch.Tensor, state_cov: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         UKF prediction step.
         Generates sigma points, propagates through f, computes predicted mean and cov.
@@ -176,7 +180,7 @@ class UnscentedKalmanFilter(BaseFilter):
 
         return pred_mean, pred_cov
 
-    def update_(self, state_mean: torch.Tensor, state_cov: torch.Tensor, measurement: torch.Tensor):
+    def update_(self, state_mean: torch.Tensor, state_cov: torch.Tensor, measurement: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         UKF update step.
         If predict_ was called beforehand, reuses the propagated sigma points (sigmas_f).
@@ -223,9 +227,9 @@ class UnscentedKalmanFilter(BaseFilter):
         upd_cov = state_cov - K @ z_cov @ K.mT  # (..., n, n)
         return upd_mean, upd_cov
 
-    # ================================================================== #
+    # ------------------------------------------------------------------ #
     #                   high-level GaussianState API                     #
-    # ================================================================== #
+    # ------------------------------------------------------------------ #
     def predict(self, state: GaussianState) -> GaussianState:
         m, P = self.predict_(state.mean, state.covariance)
         return GaussianState(m, P)
@@ -237,10 +241,10 @@ class UnscentedKalmanFilter(BaseFilter):
     def predict_update(self, state: GaussianState, measurement: torch.Tensor) -> GaussianState:
         return self.update(self.predict(state), measurement)
 
-    # ================================================================== #
+    # ------------------------------------------------------------------ #
     #                        full sequence pass                          #
-    # ================================================================== #
-    def forward(self, observations: torch.Tensor):
+    # ------------------------------------------------------------------ #
+    def forward(self, observations: torch.Tensor) -> GaussianState:
         """
         Run the UKF over a sequence of observations.
 

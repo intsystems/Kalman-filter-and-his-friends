@@ -1,9 +1,11 @@
-# kalman/extended.py
+from typing import Callable, Optional, Tuple
+
 import torch
 from torch import nn
-from typing import Callable, Optional, Tuple
+
 from kalman.filters import BaseFilter, SPDParameter
 from kalman.gaussian import GaussianState
+
 
 class ExtendedKalmanFilter(BaseFilter):
     """
@@ -82,7 +84,6 @@ class ExtendedKalmanFilter(BaseFilter):
             eye_x.clone() if init_cov is None else init_cov.clone()
         )
 
-
     @property
     def Q(self) -> torch.Tensor:
         return self._Q_spd()
@@ -95,9 +96,9 @@ class ExtendedKalmanFilter(BaseFilter):
     def _init_cov(self) -> torch.Tensor:
         return self._init_cov_spd()
 
-    # ---------------------------------------------------------------------- #
-    #                               helpers                                   #
-    # ---------------------------------------------------------------------- #
+    # ------------------------------------------------------------------ #
+    #                            helpers                                  #
+    # ------------------------------------------------------------------ #
     def _autograd_jacobian(self, fn: Callable, x: torch.Tensor) -> torch.Tensor:
         """
         Compute Jacobian of `fn` wrt x with autograd.
@@ -135,9 +136,9 @@ class ExtendedKalmanFilter(BaseFilter):
             else self._autograd_jacobian(self.h, x)
         )
 
-    # ---------------------------------------------------------------------- #
-    #                      predict / update primitives                       #
-    # ---------------------------------------------------------------------- #
+    # ------------------------------------------------------------------ #
+    #                    predict / update primitives                      #
+    # ------------------------------------------------------------------ #
     def predict_(
         self,
         state_mean: torch.Tensor,
@@ -223,7 +224,7 @@ class ExtendedKalmanFilter(BaseFilter):
         self,
         state: GaussianState,
         measurement: torch.Tensor,
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    ) -> GaussianState:
         """
         Convenience wrapper that performs a *time‑update* immediately
         followed by a *measurement‑update*.
@@ -245,12 +246,12 @@ class ExtendedKalmanFilter(BaseFilter):
 
         return updated_state
 
-    # ---------------------------------------------------------------------- #
-    #                       sequence processing (filter)                     #
-    # ---------------------------------------------------------------------- #
+    # ------------------------------------------------------------------ #
+    #                     sequence processing (filter)                   #
+    # ------------------------------------------------------------------ #
     def forward(
         self, observations: torch.Tensor
-    ) -> Tuple[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+    ) -> GaussianState:
         """
         Run the EKF over a sequence of observations.
 

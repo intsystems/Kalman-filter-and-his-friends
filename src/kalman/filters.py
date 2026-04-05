@@ -80,22 +80,32 @@ class BaseFilter(nn.Module):
         self,
         state: GaussianState,
         measurement: torch.Tensor,
-    ) -> Tuple[torch.Tensor, torch.Tensor]:
+    ) -> GaussianState:
         """
         Single-step predict and update in one function.
-        Returns:
-            updated_state_mean, updated_state_cov
+
+        Returns
+        -------
+        GaussianState
+            Updated state after predict and update.
         """
         predicted_state = self.predict(state)
         updated_state = self.update(predicted_state, measurement)
         return updated_state
 
-    def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, observations: torch.Tensor) -> GaussianState:
         """
-        Processes an entire sequence of observations in shape (T, B, obs_dim).
+        Process an entire sequence of observations.
+
+        Parameters
+        ----------
+        observations : torch.Tensor
+            Shape (T, B, obs_dim).
+
         Returns
         -------
-        all_states, all_states : GaussianState ‑‑ convenient wrapper holding the whole trajectory
+        GaussianState
+            Convenient wrapper holding the whole trajectory.
         """
         pass
 
@@ -159,22 +169,28 @@ class KalmanFilter(BaseFilter):
         *,
         measurement_matrix: Optional[torch.Tensor] = None,
         measurement_noise: Optional[torch.Tensor] = None,
-        precompute_precision=True,
+        precompute_precision: bool = True,
     ) -> GaussianState:
-        """Project the current state (usually the prior) onto the measurement space
-        Args:
-            state (GaussianState): Current state estimation (Usually the results of `predict`)
-            measurement_matrix (Optional[torch.Tensor]): Overwrite the default projection matrix
-                Shape: (*, bs, state_dim)
-            measurement_noise (Optional[torch.Tensor]): Overwrite the default projection noise)
-                Shape: (*, obs_dim, obs_dim)
-            precompute_precision (bool): Precompute precision matrix (inverse covariance)
-                Done once to prevent more computations
-                Default: True
+        """Project the current state (usually the prior) onto the measurement space.
 
-        Returns:
-            GaussianState: Prior on the next state
+        Parameters
+        ----------
+        state : GaussianState
+            Current state estimation (usually the result of ``predict``).
+        measurement_matrix : torch.Tensor, optional
+            Overwrite the default projection matrix.
+            Shape: (*, bs, state_dim).
+        measurement_noise : torch.Tensor, optional
+            Overwrite the default projection noise.
+            Shape: (*, obs_dim, obs_dim).
+        precompute_precision : bool
+            Precompute precision matrix (inverse covariance).
+            Done once to prevent more computations. Default: True.
 
+        Returns
+        -------
+        GaussianState
+            Prior on the next state.
         """
         if measurement_matrix is None:
             measurement_matrix = self.measurement_matrix
@@ -229,9 +245,19 @@ class KalmanFilter(BaseFilter):
 
         return GaussianState(updated_mean, updated_cov)
 
-    def forward(self, observations: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, observations: torch.Tensor) -> GaussianState:
         """
         Run the Kalman Filter over a sequence of observations.
+
+        Parameters
+        ----------
+        observations : torch.Tensor
+            Shape (T, B, obs_dim).
+
+        Returns
+        -------
+        GaussianState
+            Filtered trajectory (means and covariances).
         """
         means = []
         covs = []

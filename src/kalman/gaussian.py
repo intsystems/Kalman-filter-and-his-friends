@@ -1,8 +1,8 @@
-# Author: torch-kf
-# https://github.com/raphaelreme/torch-kf/blob/main/torch_kf/kalman_filter.py
+# Based on: https://github.com/raphaelreme/torch-kf/blob/main/torch_kf/kalman_filter.py
+
+from typing import Optional, overload
 
 import torch
-from typing import Optional, overload
 
 
 class GaussianState:
@@ -24,10 +24,12 @@ class GaussianState:
         self.precision = precision
 
     def clone(self) -> "GaussianState":
-        """Clone the Gaussian State using `torch.Tensor.clone`
+        """Clone the Gaussian State using ``torch.Tensor.clone``.
 
-        Returns:
-            GaussianState: A copy of the Gaussian state
+        Returns
+        -------
+        GaussianState
+            A copy of the Gaussian state.
         """
         return GaussianState(
             self.mean.clone(), self.covariance.clone(), self.precision.clone() if self.precision is not None else None
@@ -56,13 +58,17 @@ class GaussianState:
     def to(self, device: torch.device) -> "GaussianState": ...
 
     def to(self, fmt):
-        """Convert a GaussianState to a specific device or dtype
+        """Convert a GaussianState to a specific device or dtype.
 
-        Args:
-            fmt (torch.dtype | torch.device): Memory format to send the state to.
+        Parameters
+        ----------
+        fmt : torch.dtype | torch.device
+            Memory format to send the state to.
 
-        Returns:
-            GaussianState: The GaussianState with the right format
+        Returns
+        -------
+        GaussianState
+            The GaussianState with the right format.
         """
         return GaussianState(
             self.mean.to(fmt),
@@ -71,18 +77,20 @@ class GaussianState:
         )
 
     def mahalanobis_squared(self, measure: torch.Tensor) -> torch.Tensor:
-        """Computes the squared mahalanobis distance of given measure
+        """Compute the squared Mahalanobis distance of given measure.
 
-        It supports batch computation: You can provide multiple measurements and have multiple states
-        You just need to ensure that shapes are broadcastable.
+        Supports batch computation: you can provide multiple measurements
+        and have multiple states. Shapes must be broadcastable.
 
-        Args:
-            measure (torch.Tensor): Points to consider
-                Shape: (*, dim, 1)
+        Parameters
+        ----------
+        measure : torch.Tensor
+            Points to consider. Shape: (*, dim, 1).
 
-        Returns:
-            torch.Tensor: Squared mahalanobis distance for each measure/state
-                Shape: (*)
+        Returns
+        -------
+        torch.Tensor
+            Squared Mahalanobis distance for each measure/state. Shape: (*).
         """
         diff = self.mean - measure  # You are responsible for broadcast
         if self.precision is None:
@@ -94,37 +102,42 @@ class GaussianState:
         return (diff.mT @ self.precision @ diff)[..., 0, 0]  # Delete trailing dimensions
 
     def mahalanobis(self, measure: torch.Tensor) -> torch.Tensor:
-        """Computes the mahalanobis distance of given measure
+        """Compute the Mahalanobis distance of given measure.
 
-        Computations of the sqrt can be slow. If you want to compare with a given threshold,
-        you should rather compare the squared mahalanobis with the squared threshold.
+        Computations of the sqrt can be slow. If you want to compare with
+        a given threshold, you should rather compare the squared Mahalanobis
+        with the squared threshold.
 
-        It supports batch computation: You can provide multiple measurements and have multiple states
-        You just need to ensure that shapes are broadcastable.
+        Supports batch computation: you can provide multiple measurements
+        and have multiple states. Shapes must be broadcastable.
 
-        Args:
-            measure (torch.Tensor): Points to consider
-                Shape: (*, dim, 1)
+        Parameters
+        ----------
+        measure : torch.Tensor
+            Points to consider. Shape: (*, dim, 1).
 
-        Returns:
-            torch.Tensor: Mahalanobis distance for each measure/state
-                Shape: (*)
+        Returns
+        -------
+        torch.Tensor
+            Mahalanobis distance for each measure/state. Shape: (*).
         """
         return self.mahalanobis_squared(measure).sqrt()
 
     def log_likelihood(self, measure: torch.Tensor) -> torch.Tensor:
-        """Computes the log-likelihood of given measure
+        """Compute the log-likelihood of given measure.
 
-        It supports batch computation: You can provide multiple measurements and have multiple states
-        You just need to ensure that shapes are broadcastable.
+        Supports batch computation: you can provide multiple measurements
+        and have multiple states. Shapes must be broadcastable.
 
-        Args:
-            measure (torch.Tensor): Points to consider
-                Shape: (*, dim, 1)
+        Parameters
+        ----------
+        measure : torch.Tensor
+            Points to consider. Shape: (*, dim, 1).
 
-        Returns:
-            torch.Tensor: Log-likelihood for each measure/state
-                Shape: (*, 1)
+        Returns
+        -------
+        torch.Tensor
+            Log-likelihood for each measure/state. Shape: (*, 1).
         """
         maha_2 = self.mahalanobis_squared(measure)
         log_det = torch.log(torch.det(self.covariance))
@@ -132,17 +145,19 @@ class GaussianState:
         return -0.5 * (self.covariance.shape[-1] * torch.log(2 * torch.tensor(torch.pi)) + log_det + maha_2)
 
     def likelihood(self, measure: torch.Tensor) -> torch.Tensor:
-        """Computes the likelihood of given measure
+        """Compute the likelihood of given measure.
 
-        It supports batch computation: You can provide multiple measurements and have multiple states
-        You just need to ensure that shapes are broadcastable.
+        Supports batch computation: you can provide multiple measurements
+        and have multiple states. Shapes must be broadcastable.
 
-        Args:
-            measure (torch.Tensor): Points to consider
-                Shape: (*, dim, 1)
+        Parameters
+        ----------
+        measure : torch.Tensor
+            Points to consider. Shape: (*, dim, 1).
 
-        Returns:
-            torch.Tensor: Likelihood for each measure/state
-                Shape: (*, 1)
+        Returns
+        -------
+        torch.Tensor
+            Likelihood for each measure/state. Shape: (*, 1).
         """
         return self.log_likelihood(measure).exp()
